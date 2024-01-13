@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
 	private static boolean inAuto = false;
 
 	private static boolean isFMSAttached = false;
-	private static Alliance alliance = Alliance.Invalid;
+	private static Alliance alliance;
 	private static double matchTime = 0;
 
 	/**

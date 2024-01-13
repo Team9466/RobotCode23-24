@@ -2,6 +2,7 @@ package frc.robot.drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,6 +30,7 @@ public class SwerveKinematics {
     public SwerveDrivePoseEstimator odometry;
 
     // Create gyro and rotation objects
+    public Gyro Gyro;
     public AHRS navxGyro;
     public Rotation2d robotRotation = Rotation2d.fromDegrees(0);
     public boolean relativeMode = false;
@@ -128,7 +130,7 @@ public class SwerveKinematics {
 
     public void zeroGyro() {
         navxGyro.zeroYaw();
-        navxGyro.calibrate();
+        Gyro.calibrate();
     }
 
     public double getPitch() {
