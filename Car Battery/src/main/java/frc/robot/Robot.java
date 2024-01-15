@@ -442,7 +442,7 @@ public class Robot extends TimedRobot {
 
 	void getDSData() {
 		isFMSAttached = DriverStation.isFMSAttached();
-		alliance = DriverStation.getAlliance();
+		alliance = DriverStation.getAlliance().get();
 	}
 
 	void updateMatchTime() {matchTime -= 0.02;}
