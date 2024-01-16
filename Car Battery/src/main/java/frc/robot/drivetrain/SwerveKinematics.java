@@ -30,7 +30,6 @@ public class SwerveKinematics {
     public SwerveDrivePoseEstimator odometry;
 
     // Create gyro and rotation objects
-    public Gyro Gyro;
     public AHRS navxGyro;
     public Rotation2d robotRotation = Rotation2d.fromDegrees(0);
     public boolean relativeMode = false;
@@ -130,7 +129,6 @@ public class SwerveKinematics {
 
     public void zeroGyro() {
         navxGyro.zeroYaw();
-        Gyro.calibrate();
     }
 
     public double getPitch() {

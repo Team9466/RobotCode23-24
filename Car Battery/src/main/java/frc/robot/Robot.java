@@ -31,8 +31,6 @@ public class Robot extends TimedRobot {
     CaptureReplay captureReplay = new CaptureReplay();
 
 	private static SwerveKinematics chassis = new SwerveKinematics();
-	private static Limelight limelight = new Limelight();
-	private static Arm arm = new Arm();
 	private static Intake intake = new Intake();
 
 	private static boolean inAuto = false;
@@ -70,8 +68,6 @@ public class Robot extends TimedRobot {
 
 		updateDashboard();
 
-		limelight.getValues();
-
 		chassis.updateOdometry();
 
 	}
@@ -100,8 +96,6 @@ public class Robot extends TimedRobot {
 
 		inAuto = true;
 		holding = false;
-		arm.setLevel(0);
-
 		chassis.zeroGyro();
 
 		LED.currentColor = LED.RAINBOW_rainbowPallete;
@@ -145,7 +139,6 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putBoolean("resetAngleOffsets", false);
 		}
 
-		arm.setLevel(0);
 
 		chassis.configPIDS();
 		chassis.configEncoders();
@@ -159,10 +152,6 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		updateMatchTime();
 		inputs.getControls();
-
-        if (limelight.seesTag) {
-            chassis.correctOdometry(limelight.position, Timer.getFPGATimestamp());
-        }
 
 		RunControls();
 	}
@@ -189,7 +178,6 @@ public class Robot extends TimedRobot {
 
 		inAuto = true;
 		holding = false;
-		arm.setLevel(0);
 
 		chassis.zeroGyro();
 
@@ -245,7 +233,6 @@ public class Robot extends TimedRobot {
         }
 
 		ExecuteDriveControls(((alliance == Alliance.Red) & inAuto) ? -1 : 1);
-		ExecuteManipControls();
 
 		LED.setColor();
 
@@ -291,10 +278,6 @@ public class Robot extends TimedRobot {
 
         }
 
-		if (limelight.seesTag & (matchTime == 0)) {
-			chassis.navxGyro.setAngleAdjustment(chassis.robotRotation.minus(limelight.position.getRotation()).getDegrees());
-		}
-
         // Line up with nearest cube grid
         // if (inputs.XButton) {
         //     double[] speeds = limelight.goToTarget(limelight.goToTag(), chassis.navxGyro.getYaw(), alliance);
@@ -305,91 +288,12 @@ public class Robot extends TimedRobot {
         if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].YButton) {
             chassis.configEncoders();
         }
-	}
-
-	void ExecuteManipControls() {
-		// dP for controlling arm levels
-        switch (inputs.ControllerInputs[MANIP_CONTROLLER_ID].POV) {
-            case 0:
-                // up - High
-                arm.setLevel(3);
-                holding = false;
-                break;
-            case 270:
-                // left - Mid
-                arm.setLevel(2);
-                holding = false;
-                break;
-            case 180:
-                // down - Hybrid
-                arm.setLevel(1);
-                holding = false;
-                break;
-            case 90:
-                // right - Dock
-                arm.setLevel(5);
-                holding = false;
-                break;
-    
-        }
 
         if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].AButtonPressed) {
             if (intake.pcm.getCompressor()) {
                 intake.pcm.disableCompressor();
             } else {
                 intake.pcm.enableCompressorDigital();
-            }
-        }
-
-        if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].BackButton) {
-            // back - HP Station
-            arm.setLevel(4);
-            holding = false;
-        }
-        
-        if(!DriverStation.isJoystickConnected(1)){
-            arm.armMotor.stopMotor();
-            arm.intakeMotor.stopMotor();
-        } else if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].POV == -1 & inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftY == 0 & inputs.ControllerInputs[DRIVE_CONTROLLER_ID].rightY == 0){
-            // if we have no input, stop the motors.
-            arm.armMotor.stopMotor();
-            arm.intakeMotor.stopMotor();
-            inputs.Rumbles[MANIP_CONTROLLER_ID].setRumble(RumbleType.kLeftRumble, 0);
-            inputs.Rumbles[MANIP_CONTROLLER_ID].setRumble(RumbleType.kRightRumble, 0);
-            if(!holding & arm.goalLevel == 0){
-                // if we have no input, not already holding, and are not using dp to go somewhere, start holding
-                arm.holdAng[0] = arm.getArmEncoder();
-                arm.holdAng[1] = arm.getIntakeEncoder();
-                holding = true;
-            }
-            //no input, hold
-        } else if(inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftY != 0 | inputs.ControllerInputs[DRIVE_CONTROLLER_ID].rightY != 0){
-            // if we have a controller, have input on the sticks, we are manually moving. This should automatically override dp movement.
-            arm.setLevel(0);
-            // manual arming
-            // moving, no hold.
-            // if we are using sticks we need to stop the dp movement, manual should ovverride it.
-            holding = false;
-            // tolerances so we don't kill the intake:
-            if ((arm.getIntakeEncoder() <= 78 & inputs.ControllerInputs[DRIVE_CONTROLLER_ID].rightY < 0) | (arm.getIntakeEncoder() >= 330 & inputs.ControllerInputs[DRIVE_CONTROLLER_ID].rightY > 0)) {
-                arm.intakeMotor.stopMotor();
-                if (!inAuto) {
-                    inputs.Rumbles[MANIP_CONTROLLER_ID].setRumble(RumbleType.kRightRumble, 0.05);
-                }
-            } else {
-                arm.intakeMotor.set(inputs.ControllerInputs[DRIVE_CONTROLLER_ID].rightY*0.3);
-                inputs.Rumbles[MANIP_CONTROLLER_ID].setRumble(RumbleType.kRightRumble, 0);
-            }
-
-            // tolerances so we don't kill the arm:
-            if ((arm.getArmEncoder() >= 320 & arm.getArmEncoder() < 350 & inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftY > 0) | (arm.getArmEncoder() <= 5 & inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftY < 0)) {
-                arm.armMotor.stopMotor();
-                if (!inAuto) {
-                    inputs.Rumbles[MANIP_CONTROLLER_ID].setRumble(RumbleType.kLeftRumble, 0.05);
-                }
-            } else {
-                arm.armMotor.set(inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftY*0.2);
-                inputs.Rumbles[MANIP_CONTROLLER_ID].setRumble(RumbleType.kLeftRumble, 0);
             }
         }
         
@@ -420,16 +324,10 @@ public class Robot extends TimedRobot {
             LED.currentColor = LED.STROBE_gold;
         }
 
-        // update arm
-        arm.runArm(holding);
 	}
 
 	void updateDashboard() {
 
-        if (!isFMSAttached & isDisabled()) {
-			SmartDashboard.putNumber("armA", arm.getArmEncoder());
-        	SmartDashboard.putNumber("intakeA", arm.getIntakeEncoder());
-		}
         Rotation2d[] encVals = chassis.absEncoderValues();
 
         SmartDashboard.putNumberArray("moduleStates", new double[] {encVals[0].getDegrees(),encVals[1].getDegrees(),encVals[2].getDegrees(),encVals[3].getDegrees()});
