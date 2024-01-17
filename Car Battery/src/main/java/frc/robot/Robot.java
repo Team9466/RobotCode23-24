@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.drivetrain.SwerveKinematics;
+import com.reduxrobotics.canand.CanandEventLoop;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -45,6 +47,9 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
+
+		//Initialize CAN Reading for Alchemist
+		CanandEventLoop.getInstance();
 
 		getDSData();
 

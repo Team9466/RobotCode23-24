@@ -45,10 +45,10 @@ public class SwerveKinematics {
 
     public SwerveKinematics() {
 
-        frontLeftModule = new SwerveModule(20, 21, 9, anglePID, drivePID, robotWidth, robotWidth, false);
-        frontRightModule = new SwerveModule(22, 23, 10, anglePID, drivePID, robotWidth, -robotWidth, false);
-        backLeftModule = new SwerveModule(24, 25, 11, anglePID, drivePID, -robotWidth, robotWidth, false);
-        backRightModule = new SwerveModule(26, 27, 12, anglePID, drivePID, -robotWidth, -robotWidth, true);
+        frontLeftModule = new SwerveModule(26, 27, 9, anglePID, drivePID, robotWidth, robotWidth, false);
+        frontRightModule = new SwerveModule(25, 24, 10, anglePID, drivePID, robotWidth, -robotWidth, false);
+        backLeftModule = new SwerveModule(20, 21, 11, anglePID, drivePID, -robotWidth, robotWidth, false);
+        backRightModule = new SwerveModule(2322, 22, 12, anglePID, drivePID, -robotWidth, -robotWidth, true);
 
         offsets = new ModuleOffsets();
         configEncoders(offsets.read());
