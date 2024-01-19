@@ -1,15 +1,15 @@
 package frc.robot.drivetrain;
 
 import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,12 +18,13 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class SwerveModule {
-    
+
     // Motors
     private CANSparkMax driveMotor;
     private CANSparkMax angleMotor;
 
     // Encoders
+    private Canandcoder canandcoder;
     private CANCoder absEncoder;
     private RelativeEncoder driveEncoder;
     private RelativeEncoder angleEncoder;
@@ -48,7 +49,7 @@ public class SwerveModule {
         driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
         angleMotor = new CANSparkMax(angleID, MotorType.kBrushless);
 
-        absEncoder = new CANCoder(encoderID);
+        canandcoder = new Canandcoder(encoderID);
         driveEncoder = driveMotor.getEncoder();
         angleMotor.setInverted(false);
         angleEncoder = angleMotor.getEncoder();
@@ -81,9 +82,10 @@ public class SwerveModule {
 
     public void configEncoder(double offset) {
         
-        absEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-        absEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
-        absEncoder.configMagnetOffset(offset);
+        canandcoder.setSettings(new Canandcoder.Settings()
+            .setStatusFramePeriod(0.020)
+            .setZeroOffset(offset)
+        );
 
         angleEncoder.setPositionConversionFactor(360/12.8);
         angleEncoder.setPosition(getABSEncoder().getDegrees());
@@ -107,7 +109,7 @@ public class SwerveModule {
     }
 
     public Rotation2d getABSEncoder() {
-        return Rotation2d.fromDegrees(absEncoder.getAbsolutePosition());
+        return Rotation2d.fromDegrees(canandcoder.getAbsPosition());
     }
 
     public Rotation2d getEncoder() {

@@ -5,8 +5,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Power;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -30,13 +32,14 @@ public class Robot extends TimedRobot {
     private static final int DRIVE_CONTROLLER_ID = 0;
     private static final int MANIP_CONTROLLER_ID = 1;
 	private static double[] dp = {0, 0};
-    CaptureReplay captureReplay = new CaptureReplay();
+	CaptureReplay captureReplay = new CaptureReplay();
 
 	private static SwerveKinematics chassis = new SwerveKinematics();
 	private static Intake intake = new Intake();
 
 	private static boolean inAuto = false;
 
+	public PowerDistribution pdp = new PowerDistribution();
 	private static boolean isFMSAttached = false;
 	private static Alliance alliance;
 	private static double matchTime = 0;
@@ -50,6 +53,8 @@ public class Robot extends TimedRobot {
 
 		//Initialize CAN Reading for Alchemist
 		CanandEventLoop.getInstance();
+
+		pdp.clearStickyFaults();
 
 		getDSData();
 

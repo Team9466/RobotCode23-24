@@ -40,15 +40,15 @@ public class SwerveKinematics {
 
     // Constants
     private static final double robotWidth = 0.762;
-    private static final double maxModuleSpeed = 12; //meters/sec
+    private static final double maxModuleSpeed = 5.3; //meters/sec
     private static final double maxChassisRotationSpeed = 0.75; //radians/sec
 
     public SwerveKinematics() {
 
-        frontLeftModule = new SwerveModule(26, 27, 9, anglePID, drivePID, robotWidth, robotWidth, false);
-        frontRightModule = new SwerveModule(25, 24, 10, anglePID, drivePID, robotWidth, -robotWidth, false);
-        backLeftModule = new SwerveModule(20, 21, 11, anglePID, drivePID, -robotWidth, robotWidth, false);
-        backRightModule = new SwerveModule(2322, 22, 12, anglePID, drivePID, -robotWidth, -robotWidth, true);
+        frontLeftModule = new SwerveModule(26, 27, 26, anglePID, drivePID, robotWidth, robotWidth, false);
+        frontRightModule = new SwerveModule(25, 24, 25, anglePID, drivePID, robotWidth, -robotWidth, false);
+        backLeftModule = new SwerveModule(20, 21, 20, anglePID, drivePID, -robotWidth, robotWidth, false);
+        backRightModule = new SwerveModule(23, 22, 23, anglePID, drivePID, -robotWidth, -robotWidth, true);
 
         offsets = new ModuleOffsets();
         configEncoders(offsets.read());
