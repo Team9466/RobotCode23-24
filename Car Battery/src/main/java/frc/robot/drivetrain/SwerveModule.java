@@ -1,16 +1,15 @@
 package frc.robot.drivetrain;
 
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.reduxrobotics.sensors.canandcoder.Canandcoder;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxPIDController.AccelStrategy;
+import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkPIDController.AccelStrategy;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,16 +21,15 @@ public class SwerveModule {
     // Motors
     private CANSparkMax driveMotor;
     private CANSparkMax angleMotor;
+    private SparkAbsoluteEncoder sparkencoder;
 
     // Encoders
-    private Canandcoder canandcoder;
-    private CANCoder absEncoder;
     private RelativeEncoder driveEncoder;
     private RelativeEncoder angleEncoder;
 
     // PID Controllers
-    private SparkMaxPIDController anglePIDController;
-    private SparkMaxPIDController drivePIDController;
+    private SparkPIDController anglePIDController;
+    private SparkPIDController drivePIDController;
 
     // State of the module
     private SwerveModuleState state;
@@ -44,12 +42,12 @@ public class SwerveModule {
     private final double angleMaxVel = 99999; //RPM
     private final double wheelRadius = 0.0508; //Meters
 
-    public SwerveModule(int angleID, int driveID, int encoderID, double[] anglePID, double[] drivePID, double X, double Y, boolean invertDrive) {
+    public SwerveModule(int angleID, int driveID, double[] anglePID, double[] drivePID, double X, double Y, boolean invertDrive) {
 
         driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
         angleMotor = new CANSparkMax(angleID, MotorType.kBrushless);
+        sparkencoder = angleMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
 
-        canandcoder = new Canandcoder(encoderID);
         driveEncoder = driveMotor.getEncoder();
         angleMotor.setInverted(false);
         angleEncoder = angleMotor.getEncoder();
@@ -81,12 +79,8 @@ public class SwerveModule {
     }
 
     public void configEncoder(double offset) {
+        sparkencoder.setZeroOffset(offset);
         
-        canandcoder.setSettings(new Canandcoder.Settings()
-            .setStatusFramePeriod(0.020)
-            .setZeroOffset(offset)
-        );
-
         angleEncoder.setPositionConversionFactor(360/12.8);
         angleEncoder.setPosition(getABSEncoder().getDegrees());
 
@@ -109,7 +103,8 @@ public class SwerveModule {
     }
 
     public Rotation2d getABSEncoder() {
-        return Rotation2d.fromDegrees(canandcoder.getAbsPosition());
+        return Rotation2d.fromDegrees(sparkencoder.getPosition()
+        );
     }
 
     public Rotation2d getEncoder() {

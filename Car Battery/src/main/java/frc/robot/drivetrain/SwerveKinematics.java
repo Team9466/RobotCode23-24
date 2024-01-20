@@ -2,7 +2,7 @@ package frc.robot.drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,7 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 
 public class SwerveKinematics {
-    
+        
     // Instantiate each module
     private static SwerveModule frontLeftModule;
     private static SwerveModule frontRightModule;
@@ -45,10 +45,10 @@ public class SwerveKinematics {
 
     public SwerveKinematics() {
 
-        frontLeftModule = new SwerveModule(26, 27, 26, anglePID, drivePID, robotWidth, robotWidth, false);
-        frontRightModule = new SwerveModule(25, 24, 25, anglePID, drivePID, robotWidth, -robotWidth, false);
-        backLeftModule = new SwerveModule(20, 21, 20, anglePID, drivePID, -robotWidth, robotWidth, false);
-        backRightModule = new SwerveModule(23, 22, 23, anglePID, drivePID, -robotWidth, -robotWidth, true);
+        frontLeftModule = new SwerveModule(26, 27, anglePID, drivePID, robotWidth, robotWidth, false);
+        frontRightModule = new SwerveModule(25, 24, anglePID, drivePID, robotWidth, -robotWidth, false);
+        backLeftModule = new SwerveModule(20, 21, anglePID, drivePID, -robotWidth, robotWidth, false);
+        backRightModule = new SwerveModule(23, 22, anglePID, drivePID, -robotWidth, -robotWidth, true);
 
         offsets = new ModuleOffsets();
         configEncoders(offsets.read());

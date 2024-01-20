@@ -8,10 +8,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Power;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,15 +25,12 @@ import com.reduxrobotics.canand.CanandEventLoop;
  */
 public class Robot extends TimedRobot {
 
-	private static boolean holding = false;
 	private static Inputs inputs = new Inputs(2);
     private static final int DRIVE_CONTROLLER_ID = 0;
-    private static final int MANIP_CONTROLLER_ID = 1;
 	private static double[] dp = {0, 0};
 	CaptureReplay captureReplay = new CaptureReplay();
 
 	private static SwerveKinematics chassis = new SwerveKinematics();
-	private static Intake intake = new Intake();
 
 	private static boolean inAuto = false;
 
@@ -53,6 +48,7 @@ public class Robot extends TimedRobot {
 
 		//Initialize CAN Reading for Alchemist
 		CanandEventLoop.getInstance();
+
 
 		pdp.clearStickyFaults();
 
@@ -105,10 +101,7 @@ public class Robot extends TimedRobot {
         captureReplay.autoFinished = false;
 
 		inAuto = true;
-		holding = false;
 		chassis.zeroGyro();
-
-		LED.currentColor = LED.RAINBOW_rainbowPallete;
 
 		matchTime = 15;
 
@@ -138,7 +131,6 @@ public class Robot extends TimedRobot {
 
 		inputs.nullControls();
 
-		holding = false;
 		inAuto = false;
 
         captureReplay.autoFinished = false;
@@ -187,11 +179,8 @@ public class Robot extends TimedRobot {
 		inputs.nullControls();
 
 		inAuto = true;
-		holding = false;
 
 		chassis.zeroGyro();
-
-		LED.currentColor = LED.RAINBOW_rainbowPallete;
 
 		matchTime = 15;
         
@@ -225,26 +214,18 @@ public class Robot extends TimedRobot {
 	public void simulationPeriodic() {}
 
 	void RunControls() {
-
 		if (alliance == Alliance.Blue) {
-			LED.currentColor = LED.FIXEDPATTERN_waveOcean;
 		} else if (alliance == Alliance.Red) {
-			LED.currentColor = LED.FIXEDPATTERN_waveLava;
 		} else {
-			LED.currentColor = LED.FIXEDPATTERN_waveOcean;
 		}
 
 		if (matchTime < 31 & !inAuto) {
-        	LED.currentColor = LED.MULTICOLOR_bpm;
         }
         
         if(inAuto) {
-            LED.currentColor = LED.RAINBOW_rainbowPallete;
         }
 
 		ExecuteDriveControls(((alliance == Alliance.Red) & inAuto) ? -1 : 1);
-
-		LED.setColor();
 
 	}
 
@@ -259,13 +240,11 @@ public class Robot extends TimedRobot {
                     if (!inAuto) {
                         inputs.Rumbles[DRIVE_CONTROLLER_ID].setRumble(RumbleType.kBothRumble, 0.2);
                     }
-                    LED.currentColor = LED.SOLID_red;
                 } else if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].LeftTriggerAxis > 0 | inputs.ControllerInputs[DRIVE_CONTROLLER_ID].RightTriggerAxis > 0) {
                     chassis.drive(invert*inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftX*0.4, inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftY*0.4, invert*inputs.ControllerInputs[DRIVE_CONTROLLER_ID].rightX*0.4*1.5);
                     if (!inAuto) {
                         inputs.Rumbles[DRIVE_CONTROLLER_ID].setRumble(RumbleType.kBothRumble, 0.1);
                     }
-                    LED.currentColor = LED.SOLID_redOrange;
                 } else {
                     inputs.Rumbles[DRIVE_CONTROLLER_ID].setRumble(RumbleType.kBothRumble, 0);
                     chassis.drive(invert*inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftX, inputs.ControllerInputs[DRIVE_CONTROLLER_ID].leftY, invert*inputs.ControllerInputs[DRIVE_CONTROLLER_ID].rightX*1.5);
@@ -297,41 +276,6 @@ public class Robot extends TimedRobot {
 
         if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].YButton) {
             chassis.configEncoders();
-        }
-
-        if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].AButtonPressed) {
-            if (intake.pcm.getCompressor()) {
-                intake.pcm.disableCompressor();
-            } else {
-                intake.pcm.enableCompressorDigital();
-            }
-        }
-        
-        if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].LeftBumper) {
-            intake.grabObject(true);
-        } else if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].RightBumper) {
-            intake.grabObject(false);
-        }else {
-            intake.stopMotors();
-        }
-
-        // Grabbing cone
-        if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].LeftTriggerAxis > 0.1) {
-            intake.placeObject(true);
-            LED.currentColor = LED.SOLID_gold;
-        } else {
-            if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].RightTriggerAxis > 0.1) {
-                intake.placeObject(false);
-                LED.currentColor = LED.SOLID_gold;
-            }
-        }
-
-        //led signals
-        if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].YButton) {
-            LED.currentColor = LED.STROBE_purple;
-        }
-        if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].XButton) {
-            LED.currentColor = LED.STROBE_gold;
         }
 
 	}
