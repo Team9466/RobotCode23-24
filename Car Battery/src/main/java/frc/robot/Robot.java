@@ -226,7 +226,6 @@ public class Robot extends TimedRobot {
         }
 
 		ExecuteDriveControls(((alliance == Alliance.Red) & inAuto) ? -1 : 1);
-
 	}
 
 	void ExecuteDriveControls(int invert) {
@@ -267,17 +266,13 @@ public class Robot extends TimedRobot {
 
         }
 
-        // Line up with nearest cube grid
-        // if (inputs.XButton) {
-        //     double[] speeds = limelight.goToTarget(limelight.goToTag(), chassis.navxGyro.getYaw(), alliance);
-        //     chassis.drive(speeds[0], speeds[1], speeds[2]);
-        //     LED.currentColor = LED.SOLIwhite;
-        // }
-
         if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].YButton) {
             chassis.configEncoders();
         }
 
+		if (inputs.ControllerInputs[DRIVE_CONTROLLER_ID].AButton) {
+			chassis.fixOffsets();
+		}
 	}
 
 	void updateDashboard() {

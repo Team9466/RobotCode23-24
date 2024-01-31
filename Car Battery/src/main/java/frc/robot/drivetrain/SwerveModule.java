@@ -7,7 +7,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.SparkPIDController.AccelStrategy;
 
@@ -80,12 +79,14 @@ public class SwerveModule {
 
     public void configEncoder(double offset) {
         sparkencoder.setZeroOffset(offset);
-        
-        angleEncoder.setPositionConversionFactor(360/12.8);
+        System.out.println(offset%360);
+
+        //Change the value 360 is divided by based on turning gear ratio
+        angleEncoder.setPositionConversionFactor(360/(32/3));
         angleEncoder.setPosition(getABSEncoder().getDegrees());
 
         driveEncoder.setVelocityConversionFactor(((2*Math.PI*wheelRadius)/60)/8.14);
-        driveEncoder.setPositionConversionFactor(1/8.14);
+        driveEncoder.setPositionConversionFactor(1/6);
 
     }
 

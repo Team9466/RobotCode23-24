@@ -35,7 +35,7 @@ public class SwerveKinematics {
     public boolean relativeMode = false;
 
     // PID
-    private static final double[] anglePID = {0.01, 0.0001, 0};
+    private static final double[] anglePID = {0.01, 0, 0};
     private static final double[] drivePID = {0.1, 0, 0};
 
     // Constants
@@ -124,8 +124,9 @@ public class SwerveKinematics {
     }
 
     public void fixOffsets() {
-        configEncoders(offsets.calculateOffsets(frontLeftModule.getABSEncoder(), frontRightModule.getABSEncoder(), backLeftModule.getABSEncoder(), backRightModule.getABSEncoder()));
-    }
+        
+    configEncoders(offsets.calculateOffsets(frontLeftModule.getABSEncoder(), frontRightModule.getABSEncoder(), backLeftModule.getABSEncoder(), backRightModule.getABSEncoder()));
+        }
 
     public void zeroGyro() {
         navxGyro.zeroYaw();
