@@ -53,7 +53,8 @@ public class RobotContainer
   public RobotContainer()
   {
     //Build Auto-Chooser
-    autoChooser = AutoBuilder.buildAutoChooser();
+    //Default auto does nothing, change later if you want a specific default auto
+    autoChooser = AutoBuilder.buildAutoChooser("Do Nothing");
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Configure the trigger bindings
