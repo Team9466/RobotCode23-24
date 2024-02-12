@@ -132,7 +132,6 @@ public class RobotContainer
   {
     // An example command will be run in autonomous
     //return drivebase.getAutonomousCommand(autoChooser.getSelected().toString(), true);
-    System.out.println(autoChooser.getSelected().toString());
     return autoChooser.getSelected();
   }
 
