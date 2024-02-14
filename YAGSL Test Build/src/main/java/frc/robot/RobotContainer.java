@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -36,6 +37,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer
 {
 
+  private Command commands;
+  private Intake intake;
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
 
@@ -44,10 +47,11 @@ public class RobotContainer
                                                                          "swerve"));
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  XboxController manipXbox = new XboxController(1);
+  CommandXboxController manipXbox = new CommandXboxController(1);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   XboxController driverXbox = new XboxController(0);
+  CommandXboxController driverXboxCommand = new CommandXboxController(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -123,7 +127,9 @@ public class RobotContainer
         Commands.deferredProxy(() -> drivebase.driveToPose(
                                    new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
                               ));
-//    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+    Trigger rightTrigger = (driverXboxCommand.axisGreaterThan(3, 60)).whileTrue(intake.runIntake(true));
+
+    //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
 
   /**
