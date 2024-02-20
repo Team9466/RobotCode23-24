@@ -9,8 +9,10 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 
 public class Intake extends SubsystemBase {
-    private CANSparkMax intakePivot = new CANSparkMax(9, MotorType.kBrushless);
+    //Initialize Motor Controllers for Intake
+    public CANSparkMax intakePivot = new CANSparkMax(9, MotorType.kBrushless);
     public TalonSRX intakeIntaking = new TalonSRX(10);
+    //Setup PID Control for intake pivot
     public SparkPIDController intakePivotController = intakePivot.getPIDController();
 
     public void setIntakePosition(double Angle) {

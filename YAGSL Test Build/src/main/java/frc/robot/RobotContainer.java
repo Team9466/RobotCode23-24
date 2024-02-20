@@ -16,13 +16,20 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Subystems.RunFeeder;
+import frc.robot.commands.Subystems.RunIntake;
+import frc.robot.commands.Subystems.RunShooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
 import java.io.File;
-import frc.robot.commands.Subystems.Intake.RunIntake;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -32,12 +39,21 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer
 {
 
+  private Intake intake;
+  private Shooter shooter;
+  private Feeder feeder;
+  private RobotContainer robotContainer;
+  private NamedCommands namedCommands;
+
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
+  //Register Named Commands for PathPlanner
+  namedCommands
+
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public CommandXboxController manipXbox = new CommandXboxController(1);
@@ -45,6 +61,11 @@ public class RobotContainer
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   public XboxController driverXbox = new XboxController(0);
   public CommandXboxController driverXboxCommand = new CommandXboxController(0);
+
+  //Controller Triggers
+  Trigger driverRTHeld = driverXboxCommand.axisGreaterThan(3,65);
+  Trigger manipRTHeld = manipXbox.axisGreaterThan(3, 65);
+  Trigger manipLTHeld = manipXbox.axisGreaterThan(3, 65);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -124,7 +145,9 @@ public class RobotContainer
         Commands.deferredProxy(() -> drivebase.driveToPose(
                                    new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
                               ));
-    Trigger rightTriggerHeld = new Trigger(driverXboxCommand.axisGreaterThan(3, 60)).onTrue(new RunIntake(null, null));
+    driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake, robotContainer));
+    manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter, robotContainer));
+    manipLTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, robotContainer));
 
     //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
