@@ -18,6 +18,7 @@ public class Intake extends SubsystemBase {
     public SparkAbsoluteEncoder intakEncoder = intakePivot.getAbsoluteEncoder(Type.kDutyCycle);
     
     public double intakeSpeed = 0.95;
+    
     //Setup PID Control for intake pivot
     public SparkPIDController intakePivotController = intakePivot.getPIDController();
 

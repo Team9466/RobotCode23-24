@@ -15,11 +15,13 @@ public class RunShooter extends Command {
         addRequirements(shooterSubsystem);
     } 
 
+    //Run the Shooter Motors
     @Override
     public void initialize() {
         shooterSubsystem.runShooterMotors();
     }
 
+    //Checks if Right Trigger is released
     @Override 
     public boolean isFinished() {
         if (robotContainer.manipXbox.getRawAxis(3) < 60) {
@@ -29,6 +31,7 @@ public class RunShooter extends Command {
         }
     }
 
+    //Stops Shooter Motors
     @Override
     public void end(boolean interrupted) {
         shooterSubsystem.stopShooterMotors();

@@ -26,6 +26,9 @@ public class RunFeeder extends Command {
         intakeSubsystem = intake;
         addRequirements(feederSubsystem);
     }
+
+    //Feeder Command has 2 different modes for either taking from intake, and shooting.
+    //This is determined by the beam break sensor in the initialize section
     @Override
     public void initialize() {
         feederRunning = false;
@@ -37,6 +40,8 @@ public class RunFeeder extends Command {
         
     }
 
+    //For Shooting: Checks if shooter is up to speed and then runs the feeder
+    //For Taking: Checks if feeder and shooter are at correct angles (within a tolerance) and then takes it
     @Override
     public void execute() {
         if (isShooting == true) {
@@ -55,6 +60,7 @@ public class RunFeeder extends Command {
         }
     }
 
+    //Checks if Left Trigger is released, or for taking, if the beam is broken
     @Override
     public boolean isFinished() {
         if (isShooting == true) {
@@ -74,6 +80,7 @@ public class RunFeeder extends Command {
         }
     }
 
+    //Stops all motors
     @Override
     public void end(boolean interrupted) {
         if (isShooting == true) {

@@ -147,6 +147,8 @@ public class RobotContainer
         Commands.deferredProxy(() -> drivebase.driveToPose(
                                    new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
                               ));
+
+    //Right and Left Trigger Commands
     driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake, robotContainer));
     manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter, robotContainer));
     manipLTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, robotContainer, intake));
