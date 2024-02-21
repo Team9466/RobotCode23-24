@@ -22,12 +22,12 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Subystems.RunFeeder;
 import frc.robot.commands.Subystems.RunIntake;
 import frc.robot.commands.Subystems.RunShooter;
+import frc.robot.commands.Subystems.ShooterAngle;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import java.io.File;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -62,7 +62,8 @@ public class RobotContainer
   //Controller Triggers
   Trigger driverRTHeld = driverXboxCommand.axisGreaterThan(3,65);
   Trigger manipRTHeld = manipXbox.axisGreaterThan(3, 65);
-  Trigger manipLTHeld = manipXbox.axisGreaterThan(3, 65);
+  Trigger manipLTHeld = manipXbox.axisGreaterThan(2, 65);
+  Trigger manipRB = manipXbox.button(6);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -75,10 +76,20 @@ public class RobotContainer
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     //Register Named Commands for PathPlanner
-    NamedCommands.registerCommand("Run Intake", new RunIntake(intake, robotContainer));
-    NamedCommands.registerCommand("Run Feeder", new RunFeeder(feeder, robotContainer, intake));
-    NamedCommands.registerCommand("Run Shooter", new RunShooter(shooter, robotContainer));
-
+    NamedCommands.registerCommand("Run Shooter", shooter.runShooterAuto());
+    NamedCommands.registerCommand("Stop Shooter", shooter.stopShooterAuto());
+    NamedCommands.registerCommand("Lower Intake", intake.lowerIntakeAuto());
+    NamedCommands.registerCommand("Raise Intake", intake.raiseIntakeAuto());
+    NamedCommands.registerCommand("Run Intake", intake.runIntakeAuto());
+    NamedCommands.registerCommand("Stop Intake", intake.stopIntakeAuto());
+    NamedCommands.registerCommand("Shooter Default Angle", shooter.shooterDefaultAuto());
+    NamedCommands.registerCommand("Shooter Shooting Angle", shooter.shooterShootAuto());
+    NamedCommands.registerCommand("Shooter Amp Angle", shooter.shooterAmpAuto());
+    NamedCommands.registerCommand("Run Note Transfer", feeder.runTransferAuto());
+    NamedCommands.registerCommand("Stop Note Transfer", feeder.stopTransferAuto());
+    NamedCommands.registerCommand("Run Feeder", feeder.runFeederAuto());
+    NamedCommands.registerCommand("Stop Feeder", feeder.stopFeederAuto());
+    
     // Configure the trigger bindings
     configureBindings();
 
@@ -152,6 +163,9 @@ public class RobotContainer
     driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake, robotContainer));
     manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter, robotContainer));
     manipLTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, robotContainer, intake));
+
+    //Button Commands
+    manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));
 
     //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }

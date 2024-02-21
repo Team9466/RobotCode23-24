@@ -20,8 +20,8 @@ public class RunIntake extends Command {
     @Override
     public void initialize() {
         //Lower intake to position needed to retreive notes, spin up intake motors
-        intakeSubsystem.setIntakePosition(50);
-        intakeSubsystem.intakeIntaking.set(TalonSRXControlMode.PercentOutput, 0.95);
+        intakeSubsystem.setIntakePosition(intakeSubsystem.intakeLoweredAngle);
+        intakeSubsystem.intakeIntaking.set(TalonSRXControlMode.PercentOutput, intakeSubsystem.intakeSpeed);
     }
 
     @Override
