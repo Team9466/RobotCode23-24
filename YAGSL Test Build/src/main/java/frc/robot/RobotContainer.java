@@ -43,7 +43,6 @@ public class RobotContainer
   private Shooter shooter;
   private Feeder feeder;
   private RobotContainer robotContainer;
-  private NamedCommands namedCommands;
 
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
@@ -51,8 +50,6 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
-  //Register Named Commands for PathPlanner
-  namedCommands
 
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -76,6 +73,11 @@ public class RobotContainer
     //Default auto does nothing, change later if you want a specific default auto
     autoChooser = AutoBuilder.buildAutoChooser("Do Nothing");
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    //Register Named Commands for PathPlanner
+    NamedCommands.registerCommand("Run Intake", new RunIntake(intake, robotContainer));
+    NamedCommands.registerCommand("Run Feeder", new RunFeeder(feeder, robotContainer, intake));
+    NamedCommands.registerCommand("Run Shooter", new RunShooter(shooter, robotContainer));
 
     // Configure the trigger bindings
     configureBindings();
@@ -147,7 +149,7 @@ public class RobotContainer
                               ));
     driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake, robotContainer));
     manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter, robotContainer));
-    manipLTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, robotContainer));
+    manipLTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, robotContainer, intake));
 
     //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }
