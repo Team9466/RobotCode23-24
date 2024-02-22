@@ -1,17 +1,20 @@
 package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Shooter extends SubsystemBase {
 
-    public ShooterHardware shooterHardware;
+    private RobotContainer robotContainer;
+    private ShooterHardware shooterHardware;
 
     //0 for default, 1 for shooting, 2 for amp
     public int shooterPosition;
     //Shooting First, Amp Second in array
-    public double[] shooterAngles = {25, 50};
+    public double[] shooterAngles = {10, 20};
     
     //Sets the motor speed as a percentage, must be between -1 & 1
     public double shooterMotorSpeed = 0.95;
@@ -35,7 +38,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterAngle(double angle) {
-        shooterHardware.shooterPivotController.setReference(angle/360, CANSparkMax.ControlType.kPosition);
+        shooterHardware.shooterPivotController.setReference(angle, CANSparkMax.ControlType.kPosition);
+    }
+
+    public double getControllerAxis() {
+        return robotContainer.manipXbox.getRawAxis(3);
     }
 
     //Commands below for use in auto creation
@@ -53,5 +60,10 @@ public class Shooter extends SubsystemBase {
     }
     public Command shooterAmpAuto() {
         return this.runOnce(() -> setShooterAngle(shooterAngles[1]));
+    }
+
+
+    public Shooter(ShooterHardware shooterHardware) {
+        this.shooterHardware = shooterHardware;
     }
 }

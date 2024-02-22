@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Feeder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Shooter.ShooterHardware;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,6 +11,8 @@ public class Feeder extends SubsystemBase {
     private Intake intake;
     private FeederHardware feederHardware;
     private ShooterHardware shooterHardware;
+    private RobotContainer robotContainer;
+    public boolean isShooting;
 
     public double requiredShooterSpeed = 0.9;
     public final double feederSpeed = 0.95;
@@ -28,6 +31,10 @@ public class Feeder extends SubsystemBase {
                 return false;   
     }}}
     
+    public double getControllerAxis() {
+        return robotContainer.manipXbox.getRawAxis(2);
+    }
+
     public double getFeederPosition() {
         return shooterHardware.shooterAlternateEncoder.getPosition();
     }
@@ -58,5 +65,9 @@ public class Feeder extends SubsystemBase {
     }
     public Command stopTransferAuto() {
         return this.runOnce(() -> runTransfer());
+    }
+
+    public Feeder(FeederHardware feederHardware) {
+        this.feederHardware = feederHardware;
     }
 }

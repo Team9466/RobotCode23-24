@@ -25,8 +25,11 @@ import frc.robot.commands.Subystems.RunShooter;
 import frc.robot.commands.Subystems.ShooterAngle;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.Feeder.Feeder;
+import frc.robot.subsystems.Feeder.FeederHardware;
 import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeHardware;
 import frc.robot.subsystems.Shooter.Shooter;
+import frc.robot.subsystems.Shooter.ShooterHardware;
 
 import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -40,10 +43,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer
 {
 
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
-  private final Feeder feeder = new Feeder();
-  private final RobotContainer robotContainer = new RobotContainer();
+  private final Intake intake = new Intake(new IntakeHardware());
+  private final Shooter shooter = new Shooter(new ShooterHardware());
+  private final Feeder feeder = new Feeder(new FeederHardware());
 
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
@@ -55,6 +57,7 @@ public class RobotContainer
   // CommandJoystick rotationController = new CommandJoystick(1);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public CommandXboxController manipXbox = new CommandXboxController(1);
+  public XboxController otherManipXbox = new XboxController(1);
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   public XboxController driverXbox = new XboxController(0);
@@ -63,6 +66,7 @@ public class RobotContainer
   //Controller Triggers
   Trigger driverRTHeld = driverXboxCommand.axisGreaterThan(3,65);
   Trigger manipRTHeld = manipXbox.axisGreaterThan(3, 65);
+  Trigger manipRTRelease = manipXbox.axisLessThan(3, 60);
   Trigger manipLTHeld = manipXbox.axisGreaterThan(2, 65);
   Trigger manipRB = manipXbox.button(6);
 
@@ -162,12 +166,13 @@ public class RobotContainer
                               ));
 
     //Right and Left Trigger Commands
-    driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake, robotContainer));
-    manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter, robotContainer));
-    manipLTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, robotContainer, intake));
+    driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
+    manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
+    manipLTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake));
 
     //Button Commands
     manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));
+    new JoystickButton(otherManipXbox, 6).onTrue(new ShooterAngle(shooter));
 
     //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }

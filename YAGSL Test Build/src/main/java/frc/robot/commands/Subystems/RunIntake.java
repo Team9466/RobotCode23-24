@@ -1,17 +1,14 @@
 package frc.robot.commands.Subystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake.Intake;
 
 public class RunIntake extends Command {
     private final Intake intakeSubsystem;
-    private final RobotContainer robotContainer;
 
     //Initialize Command Subsytems
-    public RunIntake(Intake iSubsystem, RobotContainer rContainer) {
+    public RunIntake(Intake iSubsystem) {
         intakeSubsystem = iSubsystem;
-        robotContainer = rContainer;
         addRequirements(intakeSubsystem);
     }
 
@@ -25,7 +22,7 @@ public class RunIntake extends Command {
     @Override
     public boolean isFinished() {
         //Check if Right Trigger has gone below 60 (50 is base level), if so, ends the command
-        if (robotContainer.driverXbox.getRawAxis(3) < 60) {
+        if (intakeSubsystem.getControllerAxis() < 60) {
             return true;
         } else {
             return false;

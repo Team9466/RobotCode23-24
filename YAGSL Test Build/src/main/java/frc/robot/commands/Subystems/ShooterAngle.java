@@ -17,10 +17,10 @@ public class ShooterAngle extends Command {
         if (shooterSubsystem.shooterPosition == 0) {
             shooterSubsystem.shooterPosition = 1;
             shooterSubsystem.setShooterAngle(shooterSubsystem.shooterAngles[0]);
-        } else if (shooterSubsystem.shooterPosition == 0) {
+        } else if (shooterSubsystem.shooterPosition == 1) {
             shooterSubsystem.shooterPosition = 2;
             shooterSubsystem.setShooterAngle(shooterSubsystem.shooterAngles[1]);
-        } else if (shooterSubsystem.shooterPosition == 0) {
+        } else if (shooterSubsystem.shooterPosition == 2) {
             shooterSubsystem.shooterPosition = 0;
             shooterSubsystem.setShooterAngle(0);
         } else {

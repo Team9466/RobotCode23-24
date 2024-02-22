@@ -13,8 +13,8 @@ public class ShooterHardware {
 
     public TalonFX shooterMotor1K;
     public TalonFX shooterMotor2K;
-    public CANSparkMax shooterMotor1N;
-    public CANSparkMax shooterMotor2N;
+    public CANSparkMax shooterMotor1N = new CANSparkMax(11, MotorType.kBrushless);
+    public CANSparkMax shooterMotor2N = new CANSparkMax(12, MotorType.kBrushless);
 
     //Initialize Motor Controllers for the shooter subsystem for either Neo or Kraken
     public CANSparkMax feederMotor = new CANSparkMax(13, MotorType.kBrushless);
@@ -31,4 +31,6 @@ public class ShooterHardware {
             shooterMotor2N = new CANSparkMax(12, MotorType.kBrushless);
         }
     }   
+
+    
 }

@@ -1,23 +1,21 @@
 package frc.robot.commands.Subystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Feeder.Feeder;
 import frc.robot.subsystems.Intake.Intake;
+
 import java.lang.Math;
 
 public class RunFeeder extends Command {
     private final Feeder feederSubsystem;
-    private final RobotContainer robotContainer;
     private final Intake intakeSubsystem;
     private boolean feederRunning;
     private boolean beamBroken;
     private boolean isShooting;
 
     //Initialize Command Subsytems
-    public RunFeeder(Feeder feeder, RobotContainer container, Intake intake) {
+    public RunFeeder(Feeder feeder, Intake intake) {
         feederSubsystem = feeder;
-        robotContainer = container;
         intakeSubsystem = intake;
         addRequirements(feederSubsystem,intakeSubsystem);
     }
@@ -58,13 +56,13 @@ public class RunFeeder extends Command {
     @Override
     public boolean isFinished() {
         if (isShooting == true) {
-            if (robotContainer.manipXbox.getRawAxis(2) < 0.60) {
+            if (feederSubsystem.getControllerAxis() < 0.60) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            if (robotContainer.manipXbox.getRawAxis(2) < 0.60) {
+            if (feederSubsystem.getControllerAxis() < 0.60) {
                 return true;
             } else if (beamBroken == true) {
                 return true;
