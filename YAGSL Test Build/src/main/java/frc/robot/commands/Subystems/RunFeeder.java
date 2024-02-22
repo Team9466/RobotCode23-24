@@ -4,10 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Feeder.Feeder;
 import frc.robot.subsystems.Intake.Intake;
-
 import java.lang.Math;
-
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 
 public class RunFeeder extends Command {
     private final Feeder feederSubsystem;
