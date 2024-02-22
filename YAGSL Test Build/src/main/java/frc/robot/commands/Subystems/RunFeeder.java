@@ -1,9 +1,10 @@
 package frc.robot.commands.Subystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Feeder;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Feeder.Feeder;
+import frc.robot.subsystems.Intake.Intake;
+
 import java.lang.Math;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
@@ -43,11 +44,11 @@ public class RunFeeder extends Command {
     public void execute() {
         if (isShooting == true) {
             if (feederSubsystem.shooterAtSpeed() == true && feederRunning == false) {
-                feederSubsystem.feederMotor.set(feederSubsystem.feederSpeed);
+                feederSubsystem.runFeederMotor(feederSubsystem.feederSpeed);
                 feederRunning = true;
             }
         } else {
-            if ((Math.abs(10 - intakeSubsystem.intakEncoder.getPosition())) <= 5 && (Math.abs(10 - feederSubsystem.feederEncoder.getPosition()) <= 5)) {
+            if ((Math.abs(10 - intakeSubsystem.getIntakePosition())) <= 5 && (Math.abs(10 - feederSubsystem.getFeederPosition()) <= 5)) {
                 if (feederRunning == true) {
                     feederSubsystem.runTransfer();
                     feederRunning = true;
@@ -80,10 +81,10 @@ public class RunFeeder extends Command {
     @Override
     public void end(boolean interrupted) {
         if (isShooting == true) {
-            feederSubsystem.feederMotor.set(0);
+            feederSubsystem.runFeederMotor(0);
         } else {
-            feederSubsystem.feederMotor.set(0);
-            intakeSubsystem.intakeIntaking.set(TalonSRXControlMode.PercentOutput, 0);
+            feederSubsystem.runFeederMotor(0);
+            intakeSubsystem.runIntake(0);
         }
     }   
 }

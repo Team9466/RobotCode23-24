@@ -24,9 +24,10 @@ import frc.robot.commands.Subystems.RunIntake;
 import frc.robot.commands.Subystems.RunShooter;
 import frc.robot.commands.Subystems.ShooterAngle;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Feeder.Feeder;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Shooter.Shooter;
+
 import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
 //import com.pathplanner.lib.auto.NamedCommands;

@@ -1,19 +1,15 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Feeder;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkAbsoluteEncoder;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Shooter.ShooterHardware;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Feeder extends SubsystemBase {
-    public Shooter shooter;
+    public ShooterHardware shooter;
     private Intake intake;
-
-    public CANSparkMax feederMotor = new CANSparkMax(15, MotorType.kBrushless);
-    public SparkAbsoluteEncoder feederEncoder = feederMotor.getAbsoluteEncoder(Type.kDutyCycle);
+    private FeederHardware feederHardware;
+    private ShooterHardware shooterHardware;
 
     public double requiredShooterSpeed = 0.9;
     public final double feederSpeed = 0.95;
@@ -32,22 +28,30 @@ public class Feeder extends SubsystemBase {
                 return false;   
     }}}
     
+    public double getFeederPosition() {
+        return shooterHardware.shooterAlternateEncoder.getPosition();
+    }
+    
+    public void runFeederMotor(double speed) {
+        feederHardware.feederMotor.set(speed);
+    }
+    
     public void runTransfer() {
-        feederMotor.set(feederSpeed);
-        intake.intakeIntaking.set(TalonSRXControlMode.PercentOutput, intake.outtakeSpeed);
+        feederHardware.feederMotor.set(feederSpeed);
+        intake.runIntake(intake.outtakeSpeed);
     }
 
     public void stopTransfer() {
-        feederMotor.set(0);
-        intake.intakeIntaking.set(TalonSRXControlMode.PercentOutput, 0);
+        feederHardware.feederMotor.set(0);
+        intake.runIntake(0);
     }
 
     //Commands for constructing Autos
     public Command runFeederAuto() {
-        return this.runOnce(() -> feederMotor.set(feederSpeed));
+        return this.runOnce(() -> feederHardware.feederMotor.set(feederSpeed));
     }
     public Command stopFeederAuto() {
-        return this.runOnce(() -> feederMotor.set(0));
+        return this.runOnce(() -> feederHardware.feederMotor.set(0));
     }
     public Command runTransferAuto() {
         return this.runOnce(() -> runTransfer());

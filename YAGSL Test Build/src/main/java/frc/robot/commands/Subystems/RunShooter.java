@@ -1,8 +1,8 @@
 package frc.robot.commands.Subystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Shooter.Shooter;
 
 public class RunShooter extends Command {
     private final Shooter shooterSubsystem;

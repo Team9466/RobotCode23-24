@@ -1,10 +1,8 @@
 package frc.robot.commands.Subystems;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Intake.Intake;
 
 public class RunIntake extends Command {
     private final Intake intakeSubsystem;
@@ -21,7 +19,7 @@ public class RunIntake extends Command {
     public void initialize() {
         //Lower intake to position needed to retreive notes, spin up intake motors
         intakeSubsystem.setIntakePosition(intakeSubsystem.intakeLoweredAngle);
-        intakeSubsystem.intakeIntaking.set(TalonSRXControlMode.PercentOutput, intakeSubsystem.intakeSpeed);
+        intakeSubsystem.runIntake(intakeSubsystem.intakeSpeed);
     }
 
     @Override
@@ -37,7 +35,7 @@ public class RunIntake extends Command {
     @Override
     public void end(boolean interrupted) {
         //reset intake position and stop running before the command terminates
-        intakeSubsystem.intakeIntaking.set(TalonSRXControlMode.PercentOutput, 0.0);
+        intakeSubsystem.runIntake(0);
         intakeSubsystem.setIntakePosition(0);
     }
 }

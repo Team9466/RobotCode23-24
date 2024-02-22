@@ -9,10 +9,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Shooter.Shooter;
+import frc.robot.subsystems.Shooter.ShooterHardware;
 import java.io.File;
 import java.io.IOException;
 import swervelib.parser.SwerveParser;
-import frc.robot.subsystems.Shooter;
 
 
 /**
@@ -22,7 +23,7 @@ import frc.robot.subsystems.Shooter;
  */
 public class Robot extends TimedRobot
 {
-
+  private ShooterHardware shooterHardware;
   private Shooter shooter;
   private static Robot   instance;
   private        Command m_autonomousCommand;
@@ -50,7 +51,7 @@ public class Robot extends TimedRobot
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    shooter.setMotorType();
+    shooterHardware.setMotorType();
     shooter.shooterPosition = 0;
     shooter.setShooterAngle(0);
 
