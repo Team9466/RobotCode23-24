@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
+import com.revrobotics.RelativeEncoder;
 
 public class Shooter extends SubsystemBase {
     //Should either be set to "Neo" or "Kraken"
@@ -21,11 +22,12 @@ public class Shooter extends SubsystemBase {
     public CANSparkMax shooterPivot = new CANSparkMax(14, MotorType.kBrushless);
     
     public SparkPIDController shooterPivotController = shooterPivot.getPIDController();
+    public RelativeEncoder shooterAlternateEncoder = shooterPivot.getAlternateEncoder(8192);
 
     //0 for default, 1 for shooting, 2 for amp
     public int shooterPosition;
     //Shooting First, Amp Second in array
-    public double[] shooterAngles = {0, 0};
+    public double[] shooterAngles = {25, 50};
     
     public void setMotorType() {
         if (motorIsKraken == true) {

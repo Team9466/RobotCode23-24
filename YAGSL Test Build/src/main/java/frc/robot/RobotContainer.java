@@ -29,7 +29,7 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
+//import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -39,10 +39,10 @@ import com.pathplanner.lib.auto.NamedCommands;
 public class RobotContainer
 {
 
-  private Intake intake;
-  private Shooter shooter;
-  private Feeder feeder;
-  private RobotContainer robotContainer;
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
+  private final Feeder feeder = new Feeder();
+  private final RobotContainer robotContainer = new RobotContainer();
 
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
@@ -76,7 +76,7 @@ public class RobotContainer
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     //Register Named Commands for PathPlanner
-    NamedCommands.registerCommand("Run Shooter", shooter.runShooterAuto());
+    /*NamedCommands.registerCommand("Run Shooter", shooter.runShooterAuto());
     NamedCommands.registerCommand("Stop Shooter", shooter.stopShooterAuto());
     NamedCommands.registerCommand("Lower Intake", intake.lowerIntakeAuto());
     NamedCommands.registerCommand("Raise Intake", intake.raiseIntakeAuto());
@@ -89,6 +89,7 @@ public class RobotContainer
     NamedCommands.registerCommand("Stop Note Transfer", feeder.stopTransferAuto());
     NamedCommands.registerCommand("Run Feeder", feeder.runFeederAuto());
     NamedCommands.registerCommand("Stop Feeder", feeder.stopFeederAuto());
+    */
     
     // Configure the trigger bindings
     configureBindings();
