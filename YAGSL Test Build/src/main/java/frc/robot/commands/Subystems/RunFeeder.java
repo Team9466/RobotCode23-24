@@ -10,8 +10,7 @@ public class RunFeeder extends Command {
     private final Feeder feederSubsystem;
     private final Intake intakeSubsystem;
     private boolean feederRunning;
-    private boolean beamBroken;
-    private boolean isShooting;
+    private boolean beamBroken = false;
 
     //Initialize Command Subsytems
     public RunFeeder(Feeder feeder, Intake intake) {
@@ -24,11 +23,12 @@ public class RunFeeder extends Command {
     //This is determined by the beam break sensor in the initialize section
     @Override
     public void initialize() {
+        System.out.println("Running Feeder");
         feederRunning = false;
         if (beamBroken == false) {
-            isShooting = false;
+            feederSubsystem.isShooting = false;
         } else {
-            isShooting = true;
+            feederSubsystem.isShooting = true;
         }
         
     }
@@ -37,13 +37,13 @@ public class RunFeeder extends Command {
     //For Taking: Checks if feeder and shooter are at correct angles (within a tolerance) and then takes it
     @Override
     public void execute() {
-        if (isShooting == true) {
+        if (feederSubsystem.isShooting == true) {
             if (feederSubsystem.shooterAtSpeed() == true && feederRunning == false) {
                 feederSubsystem.runFeederMotor(feederSubsystem.feederSpeed);
                 feederRunning = true;
             }
         } else {
-            if ((Math.abs(10 - intakeSubsystem.getIntakePosition())) <= 5 && (Math.abs(10 - feederSubsystem.getFeederPosition()) <= 5)) {
+            if ((Math.abs(intakeSubsystem.intakeAngles[0] - intakeSubsystem.getIntakePosition()) <= 5) && (Math.abs(0.45 - feederSubsystem.getFeederPosition()) <= 0.5)) {
                 if (feederRunning == true) {
                     feederSubsystem.runTransfer();
                     feederRunning = true;
@@ -55,7 +55,7 @@ public class RunFeeder extends Command {
     //Checks if Left Trigger is released, or for taking, if the beam is broken
     @Override
     public boolean isFinished() {
-        if (isShooting == true) {
+        if (feederSubsystem.isShooting == true) {
             if (feederSubsystem.getControllerAxis() < 0.60) {
                 return true;
             } else {
@@ -75,11 +75,12 @@ public class RunFeeder extends Command {
     //Stops all motors
     @Override
     public void end(boolean interrupted) {
-        if (isShooting == true) {
+        if (feederSubsystem.isShooting == true) {
             feederSubsystem.runFeederMotor(0);
         } else {
             feederSubsystem.runFeederMotor(0);
             intakeSubsystem.runIntake(0);
         }
+        System.out.println("Feeder Finished");
     }   
 }

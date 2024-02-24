@@ -19,11 +19,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Subystems.RunClimbDown;
+import frc.robot.commands.Subystems.RunClimbUp;
 import frc.robot.commands.Subystems.RunFeeder;
 import frc.robot.commands.Subystems.RunIntake;
 import frc.robot.commands.Subystems.RunShooter;
 import frc.robot.commands.Subystems.ShooterAngle;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.Climb.Climb;
+import frc.robot.subsystems.Climb.ClimbHardware;
 import frc.robot.subsystems.Feeder.Feeder;
 import frc.robot.subsystems.Feeder.FeederHardware;
 import frc.robot.subsystems.Intake.Intake;
@@ -42,10 +46,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
  */
 public class RobotContainer
 {
-
+  private final ShooterHardware shooterHardware = new ShooterHardware();
   private final Intake intake = new Intake(new IntakeHardware());
-  private final Shooter shooter = new Shooter(new ShooterHardware());
-  private final Feeder feeder = new Feeder(new FeederHardware());
+  private final Shooter shooter = new Shooter(shooterHardware);
+  private final Feeder feeder = new Feeder(new FeederHardware(), intake, shooterHardware);
+  private final Climb climb = new Climb(new ClimbHardware());
 
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
@@ -64,10 +69,10 @@ public class RobotContainer
   public CommandXboxController driverXboxCommand = new CommandXboxController(0);
 
   //Controller Triggers
-  Trigger driverRTHeld = driverXboxCommand.axisGreaterThan(3,65);
-  Trigger manipRTHeld = manipXbox.axisGreaterThan(3, 65);
-  Trigger manipRTRelease = manipXbox.axisLessThan(3, 60);
-  Trigger manipLTHeld = manipXbox.axisGreaterThan(2, 65);
+  //Trigger driverRTHeld = driverXboxCommand.axisGreaterThan(3,0.65);
+  Trigger manipRTHeld = manipXbox.axisGreaterThan(3, 0.65);
+  Trigger manipRTRelease = manipXbox.axisLessThan(3, 0.65);
+  Trigger manipLTHeld = manipXbox.axisGreaterThan(2, 0.65);
   Trigger manipRB = manipXbox.button(6);
 
   /**
@@ -166,13 +171,21 @@ public class RobotContainer
                               ));
 
     //Right and Left Trigger Commands
-    driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
+    //driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
     manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
-    manipLTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake));
+    new Trigger(() -> (manipXbox.getRawAxis(2)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake));
 
     //Button Commands
     manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));
     new JoystickButton(otherManipXbox, 6).onTrue(new ShooterAngle(shooter));
+    new JoystickButton(driverXbox, 6).onTrue(new RunClimbUp(climb));
+    new JoystickButton(driverXbox, 5).onTrue(new RunClimbDown(climb));
+    new JoystickButton(driverXbox, 6).onFalse(climb.stopClimb());
+    new JoystickButton(driverXbox, 5).onFalse(climb.stopClimb());
+    new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new InstantCommand(() -> intake.printIntakeAngle()));
+    new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new InstantCommand(() -> shooter.printShooterAngle()));
+    new Trigger(() -> (driverXbox.getRawAxis(3) > 0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
+
 
     //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }

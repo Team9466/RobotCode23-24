@@ -1,20 +1,24 @@
 package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase;
+
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Shooter extends SubsystemBase {
 
-    private RobotContainer robotContainer;
     private ShooterHardware shooterHardware;
+
+    private XboxController manipXbox = new XboxController(1);
 
     //0 for default, 1 for shooting, 2 for amp
     public int shooterPosition;
     //Shooting First, Amp Second in array
-    public double[] shooterAngles = {10, 20};
+    public double[] shooterAngles = {0.248291015625, 0.33251953125, 0.5777587890625};
+    public double shooterPivotSpeed = 0.25;
+    public double shooterSetAngle = 0;
     
     //Sets the motor speed as a percentage, must be between -1 & 1
     public double shooterMotorSpeed = 0.95;
@@ -38,11 +42,19 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterAngle(double angle) {
-        shooterHardware.shooterPivotController.setReference(angle, CANSparkMax.ControlType.kPosition);
+        System.out.println("Set Shooter Angle");
+        System.out.println(shooterHardware.shooterAlternateEncoder.getPosition());
+        shooterHardware.shooterPivotController.setFeedbackDevice(shooterHardware.shooterAlternateEncoder);
+        shooterHardware.shooterPivotController.setPositionPIDWrappingEnabled(true);
+        shooterHardware.shooterPivotController.setReference((angle), CANSparkBase.ControlType.kPosition);
+    }
+
+    public void runShooterPivot(double speed) {
+        shooterHardware.shooterPivotController.setReference(speed, CANSparkBase.ControlType.kDutyCycle);
     }
 
     public double getControllerAxis() {
-        return robotContainer.manipXbox.getRawAxis(3);
+        return manipXbox.getRawAxis(3);
     }
 
     //Commands below for use in auto creation
@@ -53,16 +65,19 @@ public class Shooter extends SubsystemBase {
         return this.runOnce(() -> stopShooterMotors());
     }
     public Command shooterDefaultAuto() {
-        return this.runOnce(() -> setShooterAngle(0));
-    }
-    public Command shooterShootAuto() {
         return this.runOnce(() -> setShooterAngle(shooterAngles[0]));
     }
-    public Command shooterAmpAuto() {
+    public Command shooterShootAuto() {
         return this.runOnce(() -> setShooterAngle(shooterAngles[1]));
     }
+    public Command shooterAmpAuto() {
+        return this.runOnce(() -> setShooterAngle(shooterAngles[2]));
+    }
 
-
+    public void printShooterAngle() {
+        System.out.println("Shooter Angle: " + shooterHardware.shooterAlternateEncoder.getPosition());
+    }
+    
     public Shooter(ShooterHardware shooterHardware) {
         this.shooterHardware = shooterHardware;
     }

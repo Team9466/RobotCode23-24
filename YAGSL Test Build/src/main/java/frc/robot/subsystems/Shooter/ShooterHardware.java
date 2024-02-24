@@ -10,11 +10,12 @@ public class ShooterHardware {
     
     //Should either be set to "Neo" or "Kraken"
     public boolean motorIsKraken = false;
+    private double[] pivotPID = {2.10, 0, 0.21};
 
     public TalonFX shooterMotor1K;
     public TalonFX shooterMotor2K;
-    public CANSparkMax shooterMotor1N = new CANSparkMax(11, MotorType.kBrushless);
-    public CANSparkMax shooterMotor2N = new CANSparkMax(12, MotorType.kBrushless);
+    public CANSparkMax shooterMotor1N;
+    public CANSparkMax shooterMotor2N;
 
     //Initialize Motor Controllers for the shooter subsystem for either Neo or Kraken
     public CANSparkMax feederMotor = new CANSparkMax(13, MotorType.kBrushless);
@@ -32,5 +33,14 @@ public class ShooterHardware {
         }
     }   
 
+    public ShooterHardware() {
+        setMotorType();
+        
+        shooterPivotController.setP(pivotPID[0]);
+        shooterPivotController.setI(pivotPID[1]);
+        shooterPivotController.setD(pivotPID[2]);
+        shooterPivotController.setFeedbackDevice(shooterAlternateEncoder);
+        shooterPivotController.setPositionPIDWrappingEnabled(true);
+    }
     
 }

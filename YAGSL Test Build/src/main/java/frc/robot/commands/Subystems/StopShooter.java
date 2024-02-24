@@ -3,11 +3,11 @@ package frc.robot.commands.Subystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter.Shooter;
 
-public class RunShooter extends Command {
+public class StopShooter extends Command {
     private final Shooter shooterSubsystem;
 
     //initialize command subsystems
-    public RunShooter(Shooter shooter) {
+    public StopShooter(Shooter shooter) {
         shooterSubsystem = shooter;
         addRequirements(shooterSubsystem);
     } 
@@ -15,23 +15,12 @@ public class RunShooter extends Command {
     //Run the Shooter Motors
     @Override
     public void initialize() {
-        shooterSubsystem.runShooterMotors();
+        shooterSubsystem.stopShooterMotors();
     }
 
     //Checks if Right Trigger is released
     @Override 
     public boolean isFinished() {
-        if (shooterSubsystem.getControllerAxis() < 0.60) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //Stops Shooter Motors
-    @Override
-    public void end(boolean interrupted) {
-        shooterSubsystem.stopShooterMotors();
+        return true;
     }
 }
-
