@@ -10,7 +10,6 @@ public class Feeder extends SubsystemBase {
     public ShooterHardware shooter;
     private Intake intake;
     private FeederHardware feederHardware;
-    private ShooterHardware shooterHardware;
     public boolean isShooting;
 
     private XboxController manipXbox = new XboxController(1);
@@ -33,10 +32,6 @@ public class Feeder extends SubsystemBase {
     
     public double getControllerAxis() {
         return manipXbox.getRawAxis(2);
-    }
-
-    public double getFeederPosition() {
-        return shooterHardware.shooterAlternateEncoder.getPosition();
     }
     
     public void runFeederMotor(double speed) {
@@ -67,9 +62,8 @@ public class Feeder extends SubsystemBase {
         return this.runOnce(() -> runTransfer());
     }
 
-    public Feeder(FeederHardware feederHardware, Intake intake, ShooterHardware shooterHardware) {
+    public Feeder(FeederHardware feederHardware, Intake intake) {
         this.feederHardware = feederHardware;
         this.intake = intake;
-        this.shooterHardware = shooterHardware;
     }
 }

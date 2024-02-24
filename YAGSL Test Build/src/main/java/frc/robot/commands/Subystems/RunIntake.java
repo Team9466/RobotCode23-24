@@ -18,6 +18,7 @@ public class RunIntake extends Command {
         //Lower intake to position needed to retreive notes, spin up intake motors
         intakeSubsystem.setIntakePosition(intakeSubsystem.intakeAngles[1]);
         intakeSubsystem.runIntake(intakeSubsystem.intakeSpeed);
+        intakeSubsystem.currentIntakePosition = 1;
     }
 
     @Override
@@ -35,6 +36,7 @@ public class RunIntake extends Command {
         //reset intake position and stop running before the command terminates
         intakeSubsystem.runIntake(0);
         intakeSubsystem.setIntakePosition(intakeSubsystem.intakeAngles[0]);
+        intakeSubsystem.currentIntakePosition = 0;
         System.out.println("Intake Finished");
     }
 }

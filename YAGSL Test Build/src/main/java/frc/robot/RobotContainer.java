@@ -49,7 +49,7 @@ public class RobotContainer
   private final ShooterHardware shooterHardware = new ShooterHardware();
   private final Intake intake = new Intake(new IntakeHardware());
   private final Shooter shooter = new Shooter(shooterHardware);
-  private final Feeder feeder = new Feeder(new FeederHardware(), intake, shooterHardware);
+  private final Feeder feeder = new Feeder(new FeederHardware(), intake);
   private final Climb climb = new Climb(new ClimbHardware());
 
   //Create Auto Chooser
@@ -173,7 +173,7 @@ public class RobotContainer
     //Right and Left Trigger Commands
     //driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
     manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
-    new Trigger(() -> (manipXbox.getRawAxis(2)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake));
+    new Trigger(() -> (manipXbox.getRawAxis(2)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake, shooter));
 
     //Button Commands
     manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));

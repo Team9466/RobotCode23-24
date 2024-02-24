@@ -3,20 +3,21 @@ package frc.robot.commands.Subystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Feeder.Feeder;
 import frc.robot.subsystems.Intake.Intake;
-
-import java.lang.Math;
+import frc.robot.subsystems.Shooter.Shooter;
 
 public class RunFeeder extends Command {
     private final Feeder feederSubsystem;
     private final Intake intakeSubsystem;
+    private final Shooter shooterSubsystem;
     private boolean feederRunning;
     private boolean beamBroken = false;
 
     //Initialize Command Subsytems
-    public RunFeeder(Feeder feeder, Intake intake) {
+    public RunFeeder(Feeder feeder, Intake intake, Shooter shooter) {
+        shooterSubsystem = shooter;
         feederSubsystem = feeder;
         intakeSubsystem = intake;
-        addRequirements(feederSubsystem,intakeSubsystem);
+        addRequirements(feederSubsystem,intakeSubsystem,shooterSubsystem);
     }
 
     //Feeder Command has 2 different modes for either taking from intake, and shooting.
@@ -43,7 +44,7 @@ public class RunFeeder extends Command {
                 feederRunning = true;
             }
         } else {
-            if ((Math.abs(intakeSubsystem.intakeAngles[0] - intakeSubsystem.getIntakePosition()) <= 5) && (Math.abs(0.45 - feederSubsystem.getFeederPosition()) <= 0.5)) {
+            if ((intakeSubsystem.currentIntakePosition == 0) && (shooterSubsystem.shooterPosition == 0)) {
                 if (feederRunning == true) {
                     feederSubsystem.runTransfer();
                     feederRunning = true;
