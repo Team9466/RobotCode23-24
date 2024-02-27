@@ -16,7 +16,7 @@ public class Shooter extends SubsystemBase {
     //0 for default, 1 for shooting, 2 for amp
     public int shooterPosition = 0;
     //Shooting First, Amp Second in array
-    public double[] shooterAngles = {0.238291015625, 0.33251953125, 0.5777587890625};
+    public double[] shooterAngles = {0.243291015625, 0.33251953125, 0.5777587890625};
     public double shooterPivotSpeed = 0.25;
     public double shooterSetAngle = 0;
     

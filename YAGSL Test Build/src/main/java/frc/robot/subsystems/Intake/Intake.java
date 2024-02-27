@@ -14,7 +14,7 @@ public class Intake extends SubsystemBase {
 
     public double intakeSpeed = -0.95;
     public double outtakeSpeed = -(intakeSpeed/4);
-    public double[] intakeAngles = {-0.03,-0.475};
+    public double[] intakeAngles = {-0.03,-0.49};
     public double currentIntakePosition = 0;
     
     //Setup PID Control for intake pivot
@@ -24,7 +24,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void runIntake(double speed) {
-        intakeHardware.intakeIntaking.set(intakeSpeed);
+        intakeHardware.intakeIntaking.set(speed);
     }
 
     public void setIntakePosition(double angle) {
