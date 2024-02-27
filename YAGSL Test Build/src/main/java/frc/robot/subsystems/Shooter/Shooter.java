@@ -14,9 +14,9 @@ public class Shooter extends SubsystemBase {
     private XboxController manipXbox = new XboxController(1);
 
     //0 for default, 1 for shooting, 2 for amp
-    public int shooterPosition;
+    public int shooterPosition = 0;
     //Shooting First, Amp Second in array
-    public double[] shooterAngles = {0.248291015625, 0.33251953125, 0.5777587890625};
+    public double[] shooterAngles = {0.238291015625, 0.33251953125, 0.5777587890625};
     public double shooterPivotSpeed = 0.25;
     public double shooterSetAngle = 0;
     
@@ -24,11 +24,27 @@ public class Shooter extends SubsystemBase {
     public double shooterMotorSpeed = 0.95;
     public void runShooterMotors() {
         if (shooterHardware.motorIsKraken == true) {
-            shooterHardware.shooterMotor1K.set(shooterMotorSpeed);
-            shooterHardware.shooterMotor2K.set(shooterMotorSpeed);
+            if (shooterPosition == 1) {
+                shooterHardware.shooterMotor1K.set(shooterMotorSpeed);
+                shooterHardware.shooterMotor2K.set(shooterMotorSpeed);
+            } else if (shooterPosition == 2) {
+                shooterHardware.shooterMotor1K.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor2K.set(shooterMotorSpeed/4);
+            } else {
+                shooterHardware.shooterMotor1K.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor2K.set(shooterMotorSpeed/4);
+            }
         } else {
-            shooterHardware.shooterMotor1N.set(shooterMotorSpeed);
-            shooterHardware.shooterMotor2N.set(shooterMotorSpeed);
+            if (shooterPosition == 1) {
+                shooterHardware.shooterMotor1N.set(shooterMotorSpeed);
+                shooterHardware.shooterMotor2N.set(shooterMotorSpeed);
+            } else if (shooterPosition == 2) {
+                shooterHardware.shooterMotor1N.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor2N.set(shooterMotorSpeed/4);
+            } else {
+                shooterHardware.shooterMotor1N.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor2N.set(shooterMotorSpeed/4);
+            }
         }
     }
     public void stopShooterMotors() {

@@ -13,8 +13,8 @@ public class Intake extends SubsystemBase {
     public XboxController driverXbox = new XboxController(0);
 
     public double intakeSpeed = -0.95;
-    public double outtakeSpeed = -intakeSpeed;
-    public double[] intakeAngles = {-0.02,-0.475};
+    public double outtakeSpeed = -(intakeSpeed/4);
+    public double[] intakeAngles = {-0.03,-0.475};
     public double currentIntakePosition = 0;
     
     //Setup PID Control for intake pivot
@@ -24,7 +24,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void runIntake(double speed) {
-        intakeHardware.intakeIntaking.set(speed);
+        intakeHardware.intakeIntaking.set(intakeSpeed);
     }
 
     public void setIntakePosition(double angle) {
@@ -55,5 +55,7 @@ public class Intake extends SubsystemBase {
 
     public Intake(IntakeHardware intakeHardware) {
         this.intakeHardware = intakeHardware;
+        setIntakePosition(intakeAngles[0]);
+        currentIntakePosition = 0;
     }
 }

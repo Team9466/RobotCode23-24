@@ -28,8 +28,10 @@ public class RunFeeder extends Command {
         feederRunning = false;
         if (beamBroken == false) {
             feederSubsystem.isShooting = false;
+            System.out.println("Feeder Running: Intaking");
         } else {
             feederSubsystem.isShooting = true;
+            System.out.println("Feeder Running: Shooting");
         }
         
     }
@@ -39,13 +41,15 @@ public class RunFeeder extends Command {
     @Override
     public void execute() {
         if (feederSubsystem.isShooting == true) {
+            //System.out.println("Running Shooting Checks");
             if (feederSubsystem.shooterAtSpeed() == true && feederRunning == false) {
                 feederSubsystem.runFeederMotor(feederSubsystem.feederSpeed);
                 feederRunning = true;
             }
         } else {
+            //System.out.println("Running Transfer Checks");
             if ((intakeSubsystem.currentIntakePosition == 0) && (shooterSubsystem.shooterPosition == 0)) {
-                if (feederRunning == true) {
+                if (feederRunning == false) {
                     feederSubsystem.runTransfer();
                     feederRunning = true;
                 }

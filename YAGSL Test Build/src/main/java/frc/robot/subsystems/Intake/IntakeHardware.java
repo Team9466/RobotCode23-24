@@ -8,7 +8,7 @@ import com.revrobotics.SparkPIDController;
 public class IntakeHardware {
     
     private double[] pivotPID = {4.25, 0, 0.6};
-    private double[] runPID = {0.5, 0, 0.1};
+    private double[] runPID = {500, 0, 0};
 
     //Initialize Motor Controllers for Intake
     public CANSparkMax intakePivot = new CANSparkMax(9, MotorType.kBrushless);

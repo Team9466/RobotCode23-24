@@ -23,7 +23,6 @@ import frc.robot.commands.Subystems.RunClimbDown;
 import frc.robot.commands.Subystems.RunClimbUp;
 import frc.robot.commands.Subystems.RunFeeder;
 import frc.robot.commands.Subystems.RunIntake;
-import frc.robot.commands.Subystems.RunShooter;
 import frc.robot.commands.Subystems.ShooterAngle;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.Climb.Climb;
@@ -49,7 +48,7 @@ public class RobotContainer
   private final ShooterHardware shooterHardware = new ShooterHardware();
   private final Intake intake = new Intake(new IntakeHardware());
   private final Shooter shooter = new Shooter(shooterHardware);
-  private final Feeder feeder = new Feeder(new FeederHardware(), intake);
+  private final Feeder feeder = new Feeder(new FeederHardware(), intake, shooter, shooterHardware);
   private final Climb climb = new Climb(new ClimbHardware());
 
   //Create Auto Chooser
@@ -69,11 +68,12 @@ public class RobotContainer
   public CommandXboxController driverXboxCommand = new CommandXboxController(0);
 
   //Controller Triggers
-  //Trigger driverRTHeld = driverXboxCommand.axisGreaterThan(3,0.65);
+  /*Trigger driverRTHeld = driverXboxCommand.axisGreaterThan(3,0.65);
   Trigger manipRTHeld = manipXbox.axisGreaterThan(3, 0.65);
   Trigger manipRTRelease = manipXbox.axisLessThan(3, 0.65);
   Trigger manipLTHeld = manipXbox.axisGreaterThan(2, 0.65);
   Trigger manipRB = manipXbox.button(6);
+  */
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -172,19 +172,19 @@ public class RobotContainer
 
     //Right and Left Trigger Commands
     //driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
-    manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
+    //manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
     new Trigger(() -> (manipXbox.getRawAxis(2)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake, shooter));
 
     //Button Commands
-    manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));
+    //manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));
     new JoystickButton(otherManipXbox, 6).onTrue(new ShooterAngle(shooter));
     new JoystickButton(driverXbox, 6).onTrue(new RunClimbUp(climb));
     new JoystickButton(driverXbox, 5).onTrue(new RunClimbDown(climb));
     new JoystickButton(driverXbox, 6).onFalse(climb.stopClimb());
     new JoystickButton(driverXbox, 5).onFalse(climb.stopClimb());
-    new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new InstantCommand(() -> intake.printIntakeAngle()));
-    new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new InstantCommand(() -> shooter.printShooterAngle()));
-    new Trigger(() -> (driverXbox.getRawAxis(3) > 0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
+    new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new InstantCommand(() -> intake.printIntakeAngle()));
+    new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new InstantCommand(() -> shooter.printShooterAngle()));
+    new Trigger(() -> (driverXbox.getRawAxis(3) > 0.65)).debounce(0.5, Debouncer.DebounceType.kFalling).whileTrue(new RunIntake(intake));
 
 
     //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
@@ -194,12 +194,20 @@ public class RobotContainer
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   */
+   */ 
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
     //return drivebase.getAutonomousCommand(autoChooser.getSelected().toString(), true);
     return autoChooser.getSelected();
+  }
+
+  public Command initShooter1() {
+    return new InstantCommand(() -> shooter.setShooterAngle(shooter.shooterAngles[0]));
+  }
+
+  public Command initShooter2() {
+    return new InstantCommand(() -> shooter.shooterPosition = 0);
   }
 
   public void setDriveMode()
