@@ -18,7 +18,6 @@ public class ShooterHardware {
     public CANSparkMax shooterMotor2N;
 
     //Initialize Motor Controllers for the shooter subsystem for either Neo or Kraken
-    public CANSparkMax feederMotor = new CANSparkMax(13, MotorType.kBrushless);
     public CANSparkMax shooterPivot = new CANSparkMax(14, MotorType.kBrushless);
     public SparkPIDController shooterPivotController = shooterPivot.getPIDController();
     public RelativeEncoder shooterAlternateEncoder = shooterPivot.getAlternateEncoder(8192);

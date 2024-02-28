@@ -57,6 +57,10 @@ public class Feeder extends SubsystemBase {
     public void runFeederMotor(double speed) {
         feederHardware.feederMotor.set(speed);
     }
+
+    public boolean getBeamStatus() {
+        return feederHardware.feederBeamBreak.get();
+    }
     
     public void runTransfer() {
         System.out.println("Running Transfer");

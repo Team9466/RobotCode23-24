@@ -23,6 +23,7 @@ import frc.robot.commands.Subystems.RunClimbDown;
 import frc.robot.commands.Subystems.RunClimbUp;
 import frc.robot.commands.Subystems.RunFeeder;
 import frc.robot.commands.Subystems.RunIntake;
+import frc.robot.commands.Subystems.RunShooter;
 import frc.robot.commands.Subystems.ShooterAngle;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.Climb.Climb;
@@ -33,6 +34,7 @@ import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeHardware;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.ShooterHardware;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -80,13 +82,8 @@ public class RobotContainer
    */
   public RobotContainer()
   {
-    //Build Auto-Chooser
-    //Default auto does nothing, change later if you want a specific default auto
-    autoChooser = AutoBuilder.buildAutoChooser("Do Nothing");
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-
     //Register Named Commands for PathPlanner
-    /*NamedCommands.registerCommand("Run Shooter", shooter.runShooterAuto());
+    NamedCommands.registerCommand("Run Shooter", shooter.runShooterAuto());
     NamedCommands.registerCommand("Stop Shooter", shooter.stopShooterAuto());
     NamedCommands.registerCommand("Lower Intake", intake.lowerIntakeAuto());
     NamedCommands.registerCommand("Raise Intake", intake.raiseIntakeAuto());
@@ -99,8 +96,13 @@ public class RobotContainer
     NamedCommands.registerCommand("Stop Note Transfer", feeder.stopTransferAuto());
     NamedCommands.registerCommand("Run Feeder", feeder.runFeederAuto());
     NamedCommands.registerCommand("Stop Feeder", feeder.stopFeederAuto());
-    */
+
+    //Build Auto-Chooser
+    //Default auto does nothing, change later if you want a specific default auto
+    autoChooser = AutoBuilder.buildAutoChooser("Do Nothing");
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     
+  
     // Configure the trigger bindings
     configureBindings();
 
@@ -174,7 +176,8 @@ public class RobotContainer
     //driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
     //manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
     new Trigger(() -> (manipXbox.getRawAxis(2)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake, shooter));
-
+    new Trigger(() -> (manipXbox.getRawAxis(3)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
+    
     //Button Commands
     //manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));
     new JoystickButton(otherManipXbox, 6).onTrue(new ShooterAngle(shooter));

@@ -104,8 +104,9 @@ public class Robot extends TimedRobot
   {
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.initShooter1().schedule();
+    m_robotContainer.initShooter2().schedule();
 
-    
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null)
     {

@@ -31,8 +31,8 @@ public class Shooter extends SubsystemBase {
                 shooterHardware.shooterMotor1K.set(shooterMotorSpeed/4);
                 shooterHardware.shooterMotor2K.set(shooterMotorSpeed/4);
             } else {
-                shooterHardware.shooterMotor1K.set(shooterMotorSpeed/4);
-                shooterHardware.shooterMotor2K.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor1K.set(0);
+                shooterHardware.shooterMotor2K.set(0);
             }
         } else {
             if (shooterPosition == 1) {
@@ -42,8 +42,8 @@ public class Shooter extends SubsystemBase {
                 shooterHardware.shooterMotor1N.set(shooterMotorSpeed/4);
                 shooterHardware.shooterMotor2N.set(shooterMotorSpeed/4);
             } else {
-                shooterHardware.shooterMotor1N.set(shooterMotorSpeed/4);
-                shooterHardware.shooterMotor2N.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor1N.set(0);
+                shooterHardware.shooterMotor2N.set(0);
             }
         }
     }

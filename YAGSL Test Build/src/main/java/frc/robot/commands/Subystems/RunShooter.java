@@ -15,6 +15,7 @@ public class RunShooter extends Command {
     //Run the Shooter Motors
     @Override
     public void initialize() {
+        System.out.println("Running Shooter");
         shooterSubsystem.runShooterMotors();
     }
 
@@ -32,6 +33,7 @@ public class RunShooter extends Command {
     @Override
     public void end(boolean interrupted) {
         shooterSubsystem.stopShooterMotors();
+        System.out.println("Finished Shooting");
     }
 }
 

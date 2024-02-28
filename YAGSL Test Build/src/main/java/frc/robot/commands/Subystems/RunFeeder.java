@@ -26,6 +26,11 @@ public class RunFeeder extends Command {
     public void initialize() {
         System.out.println("Running Feeder");
         feederRunning = false;
+        if (feederSubsystem.getBeamStatus() == true) {
+            beamBroken = false;
+        } else {
+            beamBroken = true;
+        }
         if (beamBroken == false) {
             feederSubsystem.isShooting = false;
             System.out.println("Feeder Running: Intaking");
@@ -69,9 +74,10 @@ public class RunFeeder extends Command {
         } else {
             if (feederSubsystem.getControllerAxis() < 0.60) {
                 return true;
-            } else if (beamBroken == true) {
+            } else if (feederSubsystem.getBeamStatus() == false) {
                 return true;
             } {
+                System.out.println("Ran Checks");
                 return false;
             }
         }

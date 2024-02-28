@@ -10,12 +10,6 @@
           "data": {
             "pathName": "Test Path"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
-          }
         }
       ]
     }
