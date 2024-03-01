@@ -77,7 +77,7 @@ public class RunFeeder extends Command {
             } else if (feederSubsystem.getBeamStatus() == false) {
                 return true;
             } {
-                System.out.println("Ran Checks");
+                //System.out.println("Ran Checks");
                 return false;
             }
         }

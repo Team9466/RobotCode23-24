@@ -25,10 +25,10 @@ public class Shooter extends SubsystemBase {
     public void runShooterMotors() {
         if (shooterHardware.motorIsKraken == true) {
             if (shooterPosition == 1) {
-                shooterHardware.shooterMotor1K.set(shooterMotorSpeed);
+                shooterHardware.shooterMotor1K.set(-shooterMotorSpeed);
                 shooterHardware.shooterMotor2K.set(shooterMotorSpeed);
             } else if (shooterPosition == 2) {
-                shooterHardware.shooterMotor1K.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor1K.set(-shooterMotorSpeed/4);
                 shooterHardware.shooterMotor2K.set(shooterMotorSpeed/4);
             } else {
                 shooterHardware.shooterMotor1K.set(0);
@@ -36,10 +36,10 @@ public class Shooter extends SubsystemBase {
             }
         } else {
             if (shooterPosition == 1) {
-                shooterHardware.shooterMotor1N.set(shooterMotorSpeed);
+                shooterHardware.shooterMotor1N.set(-shooterMotorSpeed);
                 shooterHardware.shooterMotor2N.set(shooterMotorSpeed);
             } else if (shooterPosition == 2) {
-                shooterHardware.shooterMotor1N.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor1N.set(-shooterMotorSpeed/4);
                 shooterHardware.shooterMotor2N.set(shooterMotorSpeed/4);
             } else {
                 shooterHardware.shooterMotor1N.set(0);

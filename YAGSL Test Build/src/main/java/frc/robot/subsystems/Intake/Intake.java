@@ -13,7 +13,7 @@ public class Intake extends SubsystemBase {
     public XboxController driverXbox = new XboxController(0);
 
     public double intakeSpeed = -0.95;
-    public double outtakeSpeed = -(0.5);
+    public double outtakeSpeed = 0.5;
     public double[] intakeAngles = {-0.03,-0.49};
     public double currentIntakePosition = 0;
     
