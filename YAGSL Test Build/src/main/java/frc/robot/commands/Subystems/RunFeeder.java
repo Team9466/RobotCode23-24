@@ -1,5 +1,6 @@
 package frc.robot.commands.Subystems;
 
+//import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Feeder.Feeder;
 import frc.robot.subsystems.Intake.Intake;
@@ -10,36 +11,49 @@ public class RunFeeder extends Command {
     private final Intake intakeSubsystem;
     private final Shooter shooterSubsystem;
     private boolean feederRunning;
-    private boolean beamBroken = false;
+    //private boolean beamBroken = false;
 
     //Initialize Command Subsytems
     public RunFeeder(Feeder feeder, Intake intake, Shooter shooter) {
         shooterSubsystem = shooter;
         feederSubsystem = feeder;
         intakeSubsystem = intake;
-        addRequirements(feederSubsystem,intakeSubsystem,shooterSubsystem);
+        addRequirements(feederSubsystem,intakeSubsystem);
     }
 
     //Feeder Command has 2 different modes for either taking from intake, and shooting.
     //This is determined by the beam break sensor in the initialize section
-    @Override
+    /*@Override
     public void initialize() {
         System.out.println("Running Feeder");
         feederRunning = false;
-        if (feederSubsystem.getBeamStatus() == true) {
-            beamBroken = false;
-        } else {
-            beamBroken = true;
-        }
-        if (beamBroken == false) {
-            feederSubsystem.isShooting = false;
-            System.out.println("Feeder Running: Intaking");
+        if (feederSubsystem.endedByBeam == false) {
+            if (feederSubsystem.getBeamStatus() == true) {
+                beamBroken = false;
+            } else {
+                beamBroken = true;
+            }
+            if (beamBroken == false) {
+                feederSubsystem.isShooting = false;
+                System.out.println("Feeder Running: Intaking");
+            } else {
+                feederSubsystem.isShooting = true;
+                System.out.println("Feeder Running: Shooting");
+            }
         } else {
             feederSubsystem.isShooting = true;
-            System.out.println("Feeder Running: Shooting");
         }
-        
-    }
+     */
+
+     @Override
+     public void initialize() {
+        feederRunning = false;
+        if (shooterSubsystem.shooterPosition == 0) {
+            feederSubsystem.isShooting = false;
+        } else {
+            feederSubsystem.isShooting = true;
+        }
+     }
 
     //For Shooting: Checks if shooter is up to speed and then runs the feeder
     //For Taking: Checks if feeder and shooter are at correct angles (within a tolerance) and then takes it
@@ -55,7 +69,7 @@ public class RunFeeder extends Command {
             //System.out.println("Running Transfer Checks");
             if ((intakeSubsystem.currentIntakePosition == 0) && (shooterSubsystem.shooterPosition == 0)) {
                 if (feederRunning == false) {
-                    feederSubsystem.runTransfer();
+                    feederSubsystem.runTransfer(true);
                     feederRunning = true;
                 }
             }
@@ -75,6 +89,7 @@ public class RunFeeder extends Command {
             if (feederSubsystem.getControllerAxis() < 0.60) {
                 return true;
             } else if (feederSubsystem.getBeamStatus() == false) {
+                //feederSubsystem.endedByBeam = true;
                 return true;
             } {
                 //System.out.println("Ran Checks");
@@ -88,6 +103,7 @@ public class RunFeeder extends Command {
     public void end(boolean interrupted) {
         if (feederSubsystem.isShooting == true) {
             feederSubsystem.runFeederMotor(0);
+            feederSubsystem.endedByBeam = false;
         } else {
             feederSubsystem.runFeederMotor(0);
             intakeSubsystem.runIntake(0);

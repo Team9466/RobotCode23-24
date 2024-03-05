@@ -14,13 +14,17 @@ public class Intake extends SubsystemBase {
 
     public double intakeSpeed = -0.95;
     public double outtakeSpeed = 0.5;
-    public double[] intakeAngles = {-0.03,-0.49};
+    public double[] intakeAngles = {-0.0375,-0.49};
     public double currentIntakePosition = 0;
     
     //Setup PID Control for intake pivot
 
-    public double getControllerAxis() {
+    public double getControllerAxis3() {
         return driverXbox.getRawAxis(3);
+    }
+
+    public double getControllerAxis2() {
+        return driverXbox.getRawAxis(2);
     }
 
     public void runIntake(double speed) {
@@ -32,6 +36,10 @@ public class Intake extends SubsystemBase {
     }
 
     public double getIntakePosition() {
+        return intakeHardware.intakeEncoder.getPosition();
+    }
+
+    public double getIntakeEncoderAngle() {
         return intakeHardware.intakeEncoder.getPosition();
     }
 

@@ -17,12 +17,15 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Subystems.RunClimbDown;
 import frc.robot.commands.Subystems.RunClimbUp;
 import frc.robot.commands.Subystems.RunFeeder;
+import frc.robot.commands.Subystems.RunFeederBack;
 import frc.robot.commands.Subystems.RunIntake;
+import frc.robot.commands.Subystems.RunOutake;
 import frc.robot.commands.Subystems.RunShooter;
 import frc.robot.commands.Subystems.ShooterAngle;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -48,9 +51,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer
 {
   private final ShooterHardware shooterHardware = new ShooterHardware();
-  private final Intake intake = new Intake(new IntakeHardware());
+  private final IntakeHardware intakeHardware = new IntakeHardware();
+  private final Intake intake = new Intake(intakeHardware);
   private final Shooter shooter = new Shooter(shooterHardware);
-  private final Feeder feeder = new Feeder(new FeederHardware(), intake, shooter, shooterHardware);
+  private final Feeder feeder = new Feeder(new FeederHardware(), intake, shooter, shooterHardware, intakeHardware);
   private final Climb climb = new Climb(new ClimbHardware());
 
   //Create Auto Chooser
@@ -93,9 +97,10 @@ public class RobotContainer
     NamedCommands.registerCommand("Shooter Shooting Angle", shooter.shooterShootAuto());
     NamedCommands.registerCommand("Shooter Amp Angle", shooter.shooterAmpAuto());
     NamedCommands.registerCommand("Run Note Transfer", feeder.runTransferAuto());
-    NamedCommands.registerCommand("Stop Note Transfer", feeder.stopTransferAuto());
+    NamedCommands.registerCommand("Stop Note Transfer", feeder.stopTransferCommand());
     NamedCommands.registerCommand("Run Feeder", feeder.runFeederAuto());
     NamedCommands.registerCommand("Stop Feeder", feeder.stopFeederAuto());
+    NamedCommands.registerCommand("Zero Gyro", new InstantCommand(drivebase::zeroGyro));
 
     //Build Auto-Chooser
     //Default auto does nothing, change later if you want a specific default auto
@@ -125,8 +130,8 @@ public class RobotContainer
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
     Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> -MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> -MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> -driverXbox.getRightX(),
         () -> -driverXbox.getRightY());
 
@@ -177,18 +182,20 @@ public class RobotContainer
     //manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
     new Trigger(() -> (manipXbox.getRawAxis(2)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake, shooter));
     new Trigger(() -> (manipXbox.getRawAxis(3)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
-    
+    new Trigger(() -> (driverXbox.getRawAxis(2)>=0.65)).debounce(0.1, DebounceType.kFalling).onTrue(new RunOutake(intake));
+    new Trigger(() -> (driverXbox.getRawAxis(3) > 0.65)).debounce(0.5, Debouncer.DebounceType.kFalling).whileTrue(new RunIntake(intake));
+
     //Button Commands
     //manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));
     new JoystickButton(otherManipXbox, 6).onTrue(new ShooterAngle(shooter));
+    new JoystickButton(otherManipXbox, 5).onTrue(new RunFeederBack(feeder, intake, shooter));
+    new JoystickButton(otherManipXbox, 5).onFalse(feeder.stopTransferCommand());
     new JoystickButton(driverXbox, 6).onTrue(new RunClimbUp(climb));
     new JoystickButton(driverXbox, 5).onTrue(new RunClimbDown(climb));
     new JoystickButton(driverXbox, 6).onFalse(climb.stopClimb());
     new JoystickButton(driverXbox, 5).onFalse(climb.stopClimb());
     new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new InstantCommand(() -> intake.printIntakeAngle()));
     new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new InstantCommand(() -> shooter.printShooterAngle()));
-    new Trigger(() -> (driverXbox.getRawAxis(3) > 0.65)).debounce(0.5, Debouncer.DebounceType.kFalling).whileTrue(new RunIntake(intake));
-
 
     //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
   }

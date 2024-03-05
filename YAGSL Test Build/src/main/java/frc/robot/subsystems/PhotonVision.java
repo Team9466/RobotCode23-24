@@ -11,11 +11,11 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Photonvision extends SubsystemBase {
+public class PhotonVision extends SubsystemBase {
   PhotonCamera backCam;
   PhotonCamera fronCam;
   /** Creates a new Photonvision. */
-  public Photonvision(NetworkTableInstance nt) {
+  public PhotonVision(NetworkTableInstance nt) {
     fronCam = new PhotonCamera(nt, "");
     backCam = new PhotonCamera(nt, "");
     fronCam.setPipelineIndex(0);
