@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase {
   PhotonCamera backCam;
-  PhotonCamera fronCam;
+  PhotonCamera frontCam;
   /** Creates a new Photonvision. */
   public PhotonVision(NetworkTableInstance nt) {
-    fronCam = new PhotonCamera(nt, "");
+    frontCam = new PhotonCamera(nt, "");
     backCam = new PhotonCamera(nt, "");
-    fronCam.setPipelineIndex(0);
+    frontCam.setPipelineIndex(0);
   }
   // AprilTags
   public double[] getTagData(int id) {
@@ -54,7 +54,7 @@ public class PhotonVision extends SubsystemBase {
   }
 
   public boolean isObj() {
-    var result = fronCam.getLatestResult();
+    var result = frontCam.getLatestResult();
     boolean hasTargets = result.hasTargets();
     if (hasTargets) {
       return true;
@@ -69,19 +69,19 @@ public class PhotonVision extends SubsystemBase {
   }
 
   public double objYaw() {
-    var result = fronCam.getLatestResult();
+    var result = frontCam.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     return target.getYaw();
   }
 
   public double objPitch() {
-    var result = fronCam.getLatestResult();
+    var result = frontCam.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     return target.getPitch();
   }
 
   public double objSkew() {
-    var result = fronCam.getLatestResult();
+    var result = frontCam.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
     return target.getSkew();
   }

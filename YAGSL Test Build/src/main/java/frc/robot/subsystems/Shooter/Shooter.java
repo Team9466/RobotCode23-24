@@ -15,12 +15,13 @@ public class Shooter extends SubsystemBase {
     //0 for default, 1 for shooting, 2 for amp
     public int shooterPosition = 0;
     //Shooting First, Amp Second in array
-    public double[] shooterAngles = {0.230291015625, 0.190291015625, 0.5777587890625};
+    public double[] shooterAngles = {0.230291015625, 0.360291015625, 0.5777587890625};
     public double shooterPivotSpeed = 0.25;
     public double shooterSetAngle = 0;
     
     //Sets the motor speed as a percentage, must be between -1 & 1
-    public double shooterMotorSpeed = 0.6;
+    public double shooterMotorSpeed = 1;
+    public double shooterIdleSpeed = 0.05;
     public void runShooterMotors() {
         if (shooterHardware.motorIsKraken == true) {
             if (shooterPosition == 1) {
@@ -30,8 +31,8 @@ public class Shooter extends SubsystemBase {
                 shooterHardware.shooterMotor1K.set((shooterMotorSpeed/4));
                 shooterHardware.shooterMotor2K.set(shooterMotorSpeed/4);
             } else {
-                shooterHardware.shooterMotor1K.set(0);
-                shooterHardware.shooterMotor2K.set(0);
+                shooterHardware.shooterMotor1K.set(shooterIdleSpeed);
+                shooterHardware.shooterMotor2K.set(shooterIdleSpeed);
             }
         } else {
             if (shooterPosition == 1) {
@@ -41,18 +42,18 @@ public class Shooter extends SubsystemBase {
                 shooterHardware.shooterMotor1N.set(-(shooterMotorSpeed/4));
                 shooterHardware.shooterMotor2N.set(shooterMotorSpeed/4);
             } else {
-                shooterHardware.shooterMotor1N.set(0);
-                shooterHardware.shooterMotor2N.set(0);
+                shooterHardware.shooterMotor1N.set(shooterIdleSpeed);
+                shooterHardware.shooterMotor2N.set(shooterIdleSpeed);
             }
         }
     }
     public void stopShooterMotors() {
         if (shooterHardware.motorIsKraken == true) {
-            shooterHardware.shooterMotor1K.set(0);
-            shooterHardware.shooterMotor2K.set(0);
+            shooterHardware.shooterMotor1K.set(shooterIdleSpeed);
+            shooterHardware.shooterMotor2K.set(shooterIdleSpeed);
         } else {
-            shooterHardware.shooterMotor1N.set(0);
-            shooterHardware.shooterMotor2N.set(0);
+            shooterHardware.shooterMotor1N.set(shooterIdleSpeed);
+            shooterHardware.shooterMotor2N.set(shooterIdleSpeed);
         }
     }
 
@@ -95,5 +96,12 @@ public class Shooter extends SubsystemBase {
     
     public Shooter(ShooterHardware shooterHardware) {
         this.shooterHardware = shooterHardware;
+        if (shooterHardware.motorIsKraken == true) {
+            shooterHardware.shooterMotor1K.set(shooterIdleSpeed);
+            shooterHardware.shooterMotor2K.set(shooterIdleSpeed);
+        } else if (shooterHardware.motorIsKraken == false) {
+            shooterHardware.shooterMotor1N.set(shooterIdleSpeed);
+            shooterHardware.shooterMotor2N.set(shooterIdleSpeed);
+        }
     }
 }

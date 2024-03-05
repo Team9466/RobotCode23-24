@@ -58,6 +58,7 @@ public class ShooterHardware {
         shooterPivotController.setD(pivotPID[2]);
         shooterPivotController.setFeedbackDevice(shooterAlternateEncoder);
         shooterPivotController.setPositionPIDWrappingEnabled(true);
+
     }
     
 }

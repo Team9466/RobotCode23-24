@@ -20,7 +20,7 @@ public class Feeder extends SubsystemBase {
 
     private XboxController manipXbox = new XboxController(1);
     public double requiredShooterSpeed = 0.0;
-    public final double feederSpeed = -0.55;
+    public final double feederSpeed = -0.25;
 
     public boolean shooterAtSpeed() {
         if (shooterHardware.motorIsKraken == true) {
@@ -68,10 +68,10 @@ public class Feeder extends SubsystemBase {
     public void runTransfer(boolean forward) {
         System.out.println("Running Transfer");
         if (forward == true) {
-            feederHardware.feederMotor.set(feederSpeed/2);
+            feederHardware.feederMotor.set(feederSpeed);
             intakeHardware.intakeIntaking.set(-(intake.intakeSpeed/1.5));
         } else {
-            feederHardware.feederMotor.set(-feederSpeed/2);
+            feederHardware.feederMotor.set(-feederSpeed);
             intakeHardware.intakeIntaking.set((intake.intakeSpeed/1.5));
         }
     }

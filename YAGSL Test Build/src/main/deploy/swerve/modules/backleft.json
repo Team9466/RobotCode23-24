@@ -16,7 +16,7 @@
   },
   "conversionFactor": {
     "angle": 360,
-    "drive": 0.05
+    "drive": 0
   },
   "encoder": {
     "type": "canandcoder",
