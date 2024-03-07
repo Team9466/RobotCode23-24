@@ -38,6 +38,7 @@ import frc.robot.subsystems.Intake.IntakeHardware;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.ShooterHardware;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj.RobotBase;
 
 import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -141,20 +142,21 @@ public class RobotContainer
     // left stick controls translation
     // right stick controls the angular velocity of the robot
 
-    /*
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
+    
+    /*Command driveFieldOrientedAnglularVelocity = drivebase.driveCommand(
         () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
         () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> driverXbox.getRawAxis(2));
+        */
 
     Command driveFieldOrientedDirectAngleSim = drivebase.simDriveCommand(
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+        () -> -MathUtil.applyDeadband(driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+        () -> -MathUtil.applyDeadband(driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
         () -> driverXbox.getRawAxis(2));
-    */
+    
 
     drivebase.setDefaultCommand(
-      driveFieldOrientedDirectAngle);
+      !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
 
   }
 
@@ -222,7 +224,7 @@ public class RobotContainer
 
   public void setDriveMode()
   {
-    //drivebase.setDefaultCommand();
+   // drivebase.setDefaultCommand();
   }
 
   public void setMotorBrake(boolean brake)
