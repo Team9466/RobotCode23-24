@@ -28,6 +28,8 @@ public class ShooterHardware {
     public RelativeEncoder shooterAlternateEncoder = shooterPivot.getAlternateEncoder(8192);
     public TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
 
+    private double[] shooterPIDSV = {0.02, 0, 0.0005, 0.005, 0.0105};
+
     public void setMotorType() {
         if (motorIsKraken == true) {
             shooterMotor1K = new TalonFX(11);
@@ -47,10 +49,20 @@ public class ShooterHardware {
         shooterConfig.CurrentLimits.SupplyCurrentLimit = 80;
         shooterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        shooterConfig.Slot0.kP = shooterPIDSV[0];
+        shooterConfig.Slot0.kI = shooterPIDSV[1];
+        shooterConfig.Slot0.kD = shooterPIDSV[2];
+        shooterConfig.Slot0.kS = shooterPIDSV[3];
+        shooterConfig.Slot0.kV = shooterPIDSV[4];
 
         if (motorIsKraken = true) {
+            shooterConfigurator1.apply(shooterConfig);
+            shooterConfigurator2.apply(shooterConfig);
             shooterConfigurator1.refresh(shooterConfig);
             shooterConfigurator2.refresh(shooterConfig);
+            shooterMotor2K.setInverted(false);
+            shooterMotor1K.setInverted(false);
+            System.out.println("Shooter Config Applied");
         }
         
         shooterPivotController.setP(pivotPID[0]);

@@ -1,9 +1,12 @@
 package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.revrobotics.CANSparkBase;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Shooter extends SubsystemBase {
@@ -19,20 +22,26 @@ public class Shooter extends SubsystemBase {
     public double shooterPivotSpeed = 0.25;
     public double shooterSetAngle = 0;
     
-    //Sets the motor speed as a percentage, must be between -1 & 1
-    public double shooterMotorSpeed = 1;
+    //Sets the motor speed as RPS, first idle, second shoot, third amp
+    public double[] shooterMotorSpeeds = {5, 95, 30};
+    public double shooterMotorSpeed = 0.95;
     public double shooterIdleSpeed = 0.05;
+
+    final VelocityDutyCycle shooterSpeedIdle = new VelocityDutyCycle(shooterMotorSpeeds[0]).withSlot(0);
+    final VelocityDutyCycle shooterSpeedShoot = new VelocityDutyCycle(shooterMotorSpeeds[1]).withSlot(0);
+    final VelocityDutyCycle shooterSpeedAmp = new VelocityDutyCycle(shooterMotorSpeeds[2]).withSlot(0);
+
     public void runShooterMotors() {
         if (shooterHardware.motorIsKraken == true) {
             if (shooterPosition == 1) {
-                shooterHardware.shooterMotor1K.set((shooterMotorSpeed));
-                shooterHardware.shooterMotor2K.set(shooterMotorSpeed);
+                shooterHardware.shooterMotor1K.setControl(shooterSpeedShoot);
+                shooterHardware.shooterMotor2K.setControl(shooterSpeedShoot);
             } else if (shooterPosition == 2) {
-                shooterHardware.shooterMotor1K.set((shooterMotorSpeed/4));
-                shooterHardware.shooterMotor2K.set(shooterMotorSpeed/4);
+                shooterHardware.shooterMotor1K.setControl(shooterSpeedAmp);
+                shooterHardware.shooterMotor2K.setControl(shooterSpeedAmp);
             } else {
-                shooterHardware.shooterMotor1K.set(shooterIdleSpeed);
-                shooterHardware.shooterMotor2K.set(shooterIdleSpeed);
+                shooterHardware.shooterMotor1K.setControl(shooterSpeedIdle);
+                shooterHardware.shooterMotor2K.setControl(shooterSpeedIdle);
             }
         } else {
             if (shooterPosition == 1) {
@@ -49,8 +58,8 @@ public class Shooter extends SubsystemBase {
     }
     public void stopShooterMotors() {
         if (shooterHardware.motorIsKraken == true) {
-            shooterHardware.shooterMotor1K.set(shooterIdleSpeed);
-            shooterHardware.shooterMotor2K.set(shooterIdleSpeed);
+            shooterHardware.shooterMotor1K.setControl(shooterSpeedIdle);
+            shooterHardware.shooterMotor2K.setControl(shooterSpeedIdle);
         } else {
             shooterHardware.shooterMotor1N.set(shooterIdleSpeed);
             shooterHardware.shooterMotor2N.set(shooterIdleSpeed);
@@ -94,11 +103,17 @@ public class Shooter extends SubsystemBase {
         System.out.println("Shooter Angle: " + shooterHardware.shooterAlternateEncoder.getPosition());
     }
     
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Shooter Velocity 1", shooterHardware.shooterMotor1K.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter Velocity 2", shooterHardware.shooterMotor2K.getVelocity().getValueAsDouble());
+    }
+
     public Shooter(ShooterHardware shooterHardware) {
         this.shooterHardware = shooterHardware;
         if (shooterHardware.motorIsKraken == true) {
-            shooterHardware.shooterMotor1K.set(shooterIdleSpeed);
-            shooterHardware.shooterMotor2K.set(shooterIdleSpeed);
+            shooterHardware.shooterMotor1K.setControl(shooterSpeedIdle);
+            shooterHardware.shooterMotor2K.setControl(shooterSpeedIdle);
         } else if (shooterHardware.motorIsKraken == false) {
             shooterHardware.shooterMotor1N.set(shooterIdleSpeed);
             shooterHardware.shooterMotor2N.set(shooterIdleSpeed);

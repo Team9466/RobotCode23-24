@@ -108,7 +108,9 @@ public class RobotContainer
     autoChooser = AutoBuilder.buildAutoChooser("Do Nothing");
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
-  
+    SmartDashboard.putNumber("Shooter Velocity 1", shooterHardware.shooterMotor1K.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Velocity 2", shooterHardware.shooterMotor2K.getVelocity().getValueAsDouble());
+
     // Configure the trigger bindings
     configureBindings();
 
