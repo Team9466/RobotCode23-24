@@ -20,6 +20,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Auto.AutoTransfer;
 import frc.robot.commands.Subystems.RunClimbDown;
 import frc.robot.commands.Subystems.RunClimbUp;
 import frc.robot.commands.Subystems.RunFeeder;
@@ -90,14 +91,12 @@ public class RobotContainer
     //Register Named Commands for PathPlanner
     NamedCommands.registerCommand("Run Shooter", shooter.runShooterAuto());
     NamedCommands.registerCommand("Stop Shooter", shooter.stopShooterAuto());
-    NamedCommands.registerCommand("Lower Intake", intake.lowerIntakeAuto());
-    NamedCommands.registerCommand("Raise Intake", intake.raiseIntakeAuto());
     NamedCommands.registerCommand("Run Intake", intake.runIntakeAuto());
     NamedCommands.registerCommand("Stop Intake", intake.stopIntakeAuto());
     NamedCommands.registerCommand("Shooter Default Angle", shooter.shooterDefaultAuto());
     NamedCommands.registerCommand("Shooter Shooting Angle", shooter.shooterShootAuto());
     NamedCommands.registerCommand("Shooter Amp Angle", shooter.shooterAmpAuto());
-    NamedCommands.registerCommand("Run Note Transfer", feeder.runTransferAuto());
+    NamedCommands.registerCommand("Run Note Transfer", new AutoTransfer(feeder, intake, shooter));
     NamedCommands.registerCommand("Stop Note Transfer", feeder.stopTransferCommand());
     NamedCommands.registerCommand("Run Feeder", feeder.runFeederAuto());
     NamedCommands.registerCommand("Stop Feeder", feeder.stopFeederAuto());

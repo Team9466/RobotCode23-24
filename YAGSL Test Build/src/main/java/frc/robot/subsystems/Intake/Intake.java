@@ -44,17 +44,11 @@ public class Intake extends SubsystemBase {
     }
 
     //Commands for use when constructing Autos
-    public Command lowerIntakeAuto() {
-        return this.runOnce(() -> setIntakePosition(intakeAngles[1]));
-    }
-    public Command raiseIntakeAuto() {
-        return this.runOnce(() -> setIntakePosition(intakeAngles[0]));
-    }
     public Command runIntakeAuto() {
-        return this.runOnce(() -> intakeHardware.intakeIntaking.set(intakeSpeed));
+        return this.runOnce(() -> intakeHardware.intakeIntaking.set(intakeSpeed)).andThen(this.runOnce(() -> setIntakePosition(intakeAngles[1])));
     }
     public Command stopIntakeAuto() {
-        return this.runOnce(() -> intakeHardware.intakeIntaking.set(0));
+        return this.runOnce(() -> intakeHardware.intakeIntaking.set(0)).andThen(this.runOnce(() -> setIntakePosition(intakeAngles[0])));
     }
 
     public void printIntakeAngle() {

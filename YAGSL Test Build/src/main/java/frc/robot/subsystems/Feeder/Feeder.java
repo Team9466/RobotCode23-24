@@ -102,7 +102,7 @@ public class Feeder extends SubsystemBase {
         return this.runOnce(() -> feederHardware.feederMotor.set(0));
     }
     public Command runTransferAuto() {
-        return this.runOnce(() -> runTransfer(true));
+        return this.runOnce(() -> runTransferAuto());
     }
     public Command stopTransferCommand() {
         return this.runOnce(() -> stopTransfer());
