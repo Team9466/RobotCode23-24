@@ -112,10 +112,10 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Raise Intake 1st & Transfer",
+      "name": "Raise Intake & Transfer 2nd",
       "waypointRelativePos": 1.2000000000000002,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -156,7 +156,7 @@
       "name": "Shoot 2nd",
       "waypointRelativePos": 0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -188,10 +188,10 @@
       }
     },
     {
-      "name": "Run Intake 2nd",
+      "name": "Run Intake 3rd",
       "waypointRelativePos": 2.35,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -205,16 +205,16 @@
       }
     },
     {
-      "name": "Raise Intake 2nd & Transfer",
+      "name": "Raise Intake & Transfer 3rd",
       "waypointRelativePos": 2.9499999999999997,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "Raise Intake"
+                "name": "Stop Intake"
               }
             },
             {
@@ -249,7 +249,7 @@
       "name": "Shoot 3rd",
       "waypointRelativePos": 4.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -274,6 +274,64 @@
               "type": "named",
               "data": {
                 "name": "Shooter Default Angle"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Run Intake 4th",
+      "waypointRelativePos": 4.25,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Run Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Raise Intake & Trasfer 4th",
+      "waypointRelativePos": 5.3,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Stop Intake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.1
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Run Note Transfer"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.3
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Shooter Shooting Angle"
               }
             }
           ]

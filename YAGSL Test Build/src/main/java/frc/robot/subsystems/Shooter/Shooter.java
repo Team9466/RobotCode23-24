@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.revrobotics.CANSparkBase;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,10 +14,10 @@ public class Shooter extends SubsystemBase {
 
     private XboxController manipXbox = new XboxController(1);
 
-    //0 for default, 1 for shooting, 2 for amp
+    //0 for default, 1 for shooting, 2 for amp, 3 for flat
     public int shooterPosition = 0;
-    //Shooting First, Amp Second in array
-    public double[] shooterAngles = {0.230291015625, 0.360291015625, 0.5777587890625};
+    //Default, Shooting, Amp, Flat
+    public double[] shooterAngles = {0.230291015625, 0.360291015625, 0.5777587890625, 0.02};
     public double shooterPivotSpeed = 0.25;
     public double shooterSetAngle = 0;
     
@@ -97,6 +96,9 @@ public class Shooter extends SubsystemBase {
     }
     public Command shooterAmpAuto() {
         return this.runOnce(() -> setShooterAngle(shooterAngles[2])).andThen(() -> shooterPosition = 2);
+    }
+    public Command shooterFlatAngle() {
+        return this.runOnce(() -> setShooterAngle(shooterAngles[3])).andThen(this.runOnce(() -> shooterPosition = 4));
     }
 
     public void printShooterAngle() {

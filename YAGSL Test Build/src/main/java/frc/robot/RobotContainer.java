@@ -21,6 +21,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Auto.AutoTransfer;
+import frc.robot.commands.Misc.MusicSelection;
 import frc.robot.commands.Subystems.RunClimbDown;
 import frc.robot.commands.Subystems.RunClimbUp;
 import frc.robot.commands.Subystems.RunFeeder;
@@ -36,6 +37,7 @@ import frc.robot.subsystems.Feeder.Feeder;
 import frc.robot.subsystems.Feeder.FeederHardware;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeHardware;
+import frc.robot.subsystems.Shooter.MusicalMotors;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.ShooterHardware;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -58,6 +60,7 @@ public class RobotContainer
   private final Shooter shooter = new Shooter(shooterHardware);
   private final Feeder feeder = new Feeder(new FeederHardware(), intake, shooter, shooterHardware, intakeHardware);
   private final Climb climb = new Climb(new ClimbHardware());
+  private final MusicalMotors musicalMotors = new MusicalMotors(shooterHardware);
 
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
@@ -181,15 +184,12 @@ public class RobotContainer
                               ));
 
     //Right and Left Trigger Commands
-    //driverRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunIntake(intake));
-    //manipRTHeld.debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
     new Trigger(() -> (manipXbox.getRawAxis(2)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunFeeder(feeder, intake, shooter));
     new Trigger(() -> (manipXbox.getRawAxis(3)>=0.65)).debounce(0.1, Debouncer.DebounceType.kBoth).onTrue(new RunShooter(shooter));
     new Trigger(() -> (driverXbox.getRawAxis(2)>=0.65)).debounce(0.1, DebounceType.kFalling).onTrue(new RunOutake(intake));
     new Trigger(() -> (driverXbox.getRawAxis(3) > 0.65)).debounce(0.5, Debouncer.DebounceType.kFalling).whileTrue(new RunIntake(intake));
 
     //Button Commands
-    //manipRB.debounce(.25, Debouncer.DebounceType.kBoth).onTrue(new ShooterAngle(shooter));
     new JoystickButton(otherManipXbox, 6).onTrue(new ShooterAngle(shooter));
     new JoystickButton(otherManipXbox, 5).onTrue(new RunFeederBack(feeder, intake, shooter));
     new JoystickButton(otherManipXbox, 5).onFalse(feeder.stopTransferCommand());
@@ -199,8 +199,10 @@ public class RobotContainer
     new JoystickButton(driverXbox, 5).onFalse(climb.stopClimb());
     new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new InstantCommand(() -> intake.printIntakeAngle()));
     new JoystickButton(driverXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new InstantCommand(() -> shooter.printShooterAngle()));
-
-    //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+    new JoystickButton(otherManipXbox, 3).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(shooter.shooterFlatAngle());
+    new JoystickButton(otherManipXbox, 8).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(musicalMotors.playMusic());
+    new JoystickButton(otherManipXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new MusicSelection(musicalMotors));
+    new JoystickButton(otherManipXbox, 9).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(musicalMotors.stopMusic());
   }
 
   /**
