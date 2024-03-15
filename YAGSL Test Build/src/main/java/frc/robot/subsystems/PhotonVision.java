@@ -12,12 +12,18 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PhotonVision extends SubsystemBase {
-  PhotonCamera backCam;
-  PhotonCamera frontCam;
+  
+  public PhotonCamera backCam;
+  public PhotonCamera frontCam;
+
+  //Height in Meters, Pitch in Radians
+  public double frontCamHeight;
+  public double frontCamPitch;
+  
   /** Creates a new Photonvision. */
   public PhotonVision(NetworkTableInstance nt) {
-    frontCam = new PhotonCamera(nt, "");
-    backCam = new PhotonCamera(nt, "");
+    frontCam = new PhotonCamera(nt, "Front Camera");
+    backCam = new PhotonCamera(nt, "Back Camera");
     frontCam.setPipelineIndex(0);
   }
   // AprilTags

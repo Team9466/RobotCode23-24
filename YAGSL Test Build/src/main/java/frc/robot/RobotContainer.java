@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Auto.AutoTransfer;
 import frc.robot.commands.Misc.MusicSelection;
+import frc.robot.commands.Subystems.AutoTargeting;
 import frc.robot.commands.Subystems.RunClimbDown;
 import frc.robot.commands.Subystems.RunClimbUp;
 import frc.robot.commands.Subystems.RunFeeder;
@@ -31,6 +32,7 @@ import frc.robot.commands.Subystems.RunOutake;
 import frc.robot.commands.Subystems.RunShooter;
 import frc.robot.commands.Subystems.ShooterAngle;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Climb.Climb;
 import frc.robot.subsystems.Climb.ClimbHardware;
 import frc.robot.subsystems.Feeder.Feeder;
@@ -61,6 +63,7 @@ public class RobotContainer
   private final Feeder feeder = new Feeder(new FeederHardware(), intake, shooter, shooterHardware, intakeHardware);
   private final Climb climb = new Climb(new ClimbHardware());
   private final MusicalMotors musicalMotors = new MusicalMotors(shooterHardware);
+  private final PhotonVision photonVision = new PhotonVision(null);
 
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
@@ -203,6 +206,7 @@ public class RobotContainer
     new JoystickButton(otherManipXbox, 8).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(musicalMotors.playMusic());
     new JoystickButton(otherManipXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new MusicSelection(musicalMotors));
     new JoystickButton(otherManipXbox, 9).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(musicalMotors.stopMusic());
+    new JoystickButton(otherManipXbox, 1).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new AutoTargeting(photonVision, shooter, drivebase, feeder));
   }
 
   /**

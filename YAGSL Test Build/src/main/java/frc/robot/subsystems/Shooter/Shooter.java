@@ -26,13 +26,18 @@ public class Shooter extends SubsystemBase {
     public double shooterMotorSpeed = 0.95;
     public double shooterIdleSpeed = 0.05;
 
+    public boolean autoTargetingEnabled = false;
+
     final VelocityDutyCycle shooterSpeedIdle = new VelocityDutyCycle(shooterMotorSpeeds[0]).withSlot(0);
     final VelocityDutyCycle shooterSpeedShoot = new VelocityDutyCycle(shooterMotorSpeeds[1]).withSlot(0);
     final VelocityDutyCycle shooterSpeedAmp = new VelocityDutyCycle(shooterMotorSpeeds[2]).withSlot(0);
 
     public void runShooterMotors() {
         if (shooterHardware.motorIsKraken == true) {
-            if (shooterPosition == 1) {
+            if (autoTargetingEnabled == true) {
+                shooterHardware.shooterMotor1K.setControl(shooterSpeedShoot);
+                shooterHardware.shooterMotor2K.setControl(shooterSpeedShoot);
+            } else if (shooterPosition == 1) {
                 shooterHardware.shooterMotor1K.setControl(shooterSpeedShoot);
                 shooterHardware.shooterMotor2K.setControl(shooterSpeedShoot);
             } else if (shooterPosition == 2) {
@@ -43,7 +48,10 @@ public class Shooter extends SubsystemBase {
                 shooterHardware.shooterMotor2K.setControl(shooterSpeedIdle);
             }
         } else {
-            if (shooterPosition == 1) {
+            if (autoTargetingEnabled == true) {
+                shooterHardware.shooterMotor1N.set(-(shooterMotorSpeed));
+                shooterHardware.shooterMotor2N.set(shooterMotorSpeed);
+            } else if (shooterPosition == 1) {
                 shooterHardware.shooterMotor1N.set(-(shooterMotorSpeed));
                 shooterHardware.shooterMotor2N.set(shooterMotorSpeed);
             } else if (shooterPosition == 2) {
@@ -79,6 +87,14 @@ public class Shooter extends SubsystemBase {
 
     public double getControllerAxis() {
         return manipXbox.getRawAxis(3);
+    }
+
+    public double getShooterPosition() {
+        return shooterHardware.shooterAlternateEncoder.getPosition();
+    }
+
+    public boolean getAButtonPressed() {
+        return manipXbox.getAButton();
     }
 
     //Commands below for use in auto creation
