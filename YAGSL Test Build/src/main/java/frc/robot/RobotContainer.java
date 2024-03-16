@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -63,7 +64,7 @@ public class RobotContainer
   private final Feeder feeder = new Feeder(new FeederHardware(), intake, shooter, shooterHardware, intakeHardware);
   private final Climb climb = new Climb(new ClimbHardware());
   private final MusicalMotors musicalMotors = new MusicalMotors(shooterHardware);
-  private final PhotonVision photonVision = new PhotonVision(null);
+  private final PhotonVision photonVision = new PhotonVision(NetworkTableInstance.getDefault());
 
   //Create Auto Chooser
   private final SendableChooser<Command> autoChooser;
@@ -206,7 +207,7 @@ public class RobotContainer
     new JoystickButton(otherManipXbox, 8).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(musicalMotors.playMusic());
     new JoystickButton(otherManipXbox, 7).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new MusicSelection(musicalMotors));
     new JoystickButton(otherManipXbox, 9).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(musicalMotors.stopMusic());
-    new JoystickButton(otherManipXbox, 1).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(new AutoTargeting(photonVision, shooter, drivebase, feeder));
+    new JoystickButton(otherManipXbox, 1).debounce(0.1, Debouncer.DebounceType.kFalling).onTrue(drivebase.aimAtTarget(photonVision.frontCam).andThen(new AutoTargeting(photonVision, shooter, feeder)));
   }
 
   /**

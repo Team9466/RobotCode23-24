@@ -22,7 +22,7 @@ public class Shooter extends SubsystemBase {
     public double shooterSetAngle = 0;
     
     //Sets the motor speed as RPS, first idle, second shoot, third amp
-    public double[] shooterMotorSpeeds = {5, 95, 30};
+    public double[] shooterMotorSpeeds = {5, 85, 30};
     public double shooterMotorSpeed = 0.95;
     public double shooterIdleSpeed = 0.05;
 

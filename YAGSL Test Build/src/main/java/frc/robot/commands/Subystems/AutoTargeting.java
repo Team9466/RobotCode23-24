@@ -1,32 +1,24 @@
 package frc.robot.commands.Subystems;
 
 import org.photonvision.PhotonUtils;
-
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Feeder.Feeder;
 import frc.robot.subsystems.Shooter.Shooter;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class AutoTargeting extends Command {
     
     private final PhotonVision photonVision;
     private final Shooter shooter;
-    private final SwerveSubsystem swerveSubsystem;
     private final Feeder feeder;
 
     private boolean gotTargetInfo;
-    private boolean headingAdjusted;
     private boolean angleAdjusted;
 
     //Values in meters
     private double targetHeight = 1.42;
     private double range;
-    private double angleOffset;
-    private double angleConversionFactor;
-    private double realAimAngle;
     private double adjustedAimAngle;
 
     //Initial Offset is factored in including conversion factor
@@ -35,14 +27,13 @@ public class AutoTargeting extends Command {
 
     //Aim height is the height above the april tag to aim, in meters
     private double aimHeight = 0.59;
-    private double shooterHeight;
+    private double shooterHeight = 0.7747;
 
-    public AutoTargeting(PhotonVision photonVision, Shooter shooter, SwerveSubsystem swerveSubsystem, Feeder feeder) {
+    public AutoTargeting(PhotonVision photonVision, Shooter shooter, Feeder feeder) {
         this.photonVision = photonVision;
         this.shooter = shooter;
-        this.swerveSubsystem = swerveSubsystem;
         this.feeder = feeder;
-        addRequirements(shooter, photonVision, swerveSubsystem, feeder);
+        addRequirements(shooter, photonVision, feeder);
     }
 
     @Override
@@ -60,22 +51,16 @@ public class AutoTargeting extends Command {
                 photonVision.frontCamPitch,
                 Units.degreesToRadians(photonVision.frontCam.getLatestResult().getBestTarget().getPitch())
             );
-            angleOffset = photonVision.frontCam.getLatestResult().getBestTarget().getYaw();
             gotTargetInfo = true;
         }
-        if (gotTargetInfo = true && headingAdjusted == false ) {
-            double adjustedAngleOffset = swerveSubsystem.getHeading().getRotations() + (angleOffset * angleConversionFactor);
-            swerveSubsystem.drive(new Translation2d(), adjustedAngleOffset, true);
-            headingAdjusted = true;
-        }
-        if (gotTargetInfo = true && headingAdjusted == true && angleAdjusted == false) {
+        if (gotTargetInfo = true && angleAdjusted == false) {
             //aim angle is in rotations
-            realAimAngle = Math.tan((targetHeight+aimHeight-shooterHeight)/range)/(2*Math.PI);
+            double realAimAngle = Math.tan((targetHeight+aimHeight-shooterHeight)/range)/(2*Math.PI);
             adjustedAimAngle = initialOffset - (realAimAngle * encoderConversionFactor);
             shooter.setShooterAngle(adjustedAimAngle);
             angleAdjusted = true;
         }
-        if (angleAdjusted = true && headingAdjusted == true) {
+        if (angleAdjusted = true) {
             if (Math.abs(adjustedAimAngle - shooter.getShooterPosition()) <= 0.05) {
                 feeder.runFeederMotor(feeder.feederSpeed);
             }
