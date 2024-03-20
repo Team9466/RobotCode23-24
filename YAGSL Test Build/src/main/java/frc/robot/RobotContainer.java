@@ -230,6 +230,10 @@ public class RobotContainer
     return new InstantCommand(() -> shooter.shooterPosition = 0);
   }
 
+  public Command checkBeamBreak() {
+    return new InstantCommand(() -> System.out.println(feeder.getBeamStatus()));
+  }
+
   public void setDriveMode()
   {
    // drivebase.setDefaultCommand();

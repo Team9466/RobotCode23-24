@@ -85,7 +85,6 @@ public class Robot extends TimedRobot
     } else {
       m_robotContainer.driverXbox.setRumble(RumbleType.kBothRumble, 0);
     }
-    
   }
 
   /**

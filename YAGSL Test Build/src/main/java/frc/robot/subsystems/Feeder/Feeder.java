@@ -114,6 +114,5 @@ public class Feeder extends SubsystemBase {
         this.shooter = shooter;
         this.shooterHardware = shooterHardware;
         this.intakeHardware = intakeHardware;
-
     }
 }
