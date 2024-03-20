@@ -18,7 +18,6 @@ public class IntakeHardware {
     public SparkPIDController intakeRunController = intakeIntaking.getPIDController();
     
     public IntakeHardware() {
-
         intakePivotController.setP(pivotPID[0]);
         intakePivotController.setI(pivotPID[1]);
         intakePivotController.setD(pivotPID[2]);
@@ -26,5 +25,6 @@ public class IntakeHardware {
         intakeRunController.setP(runPID[1]);
         intakeRunController.setP(runPID[2]);
         intakePivotController.setFeedbackDevice(intakeEncoder);
+        intakePivot.setInverted(true);
     }
 }
